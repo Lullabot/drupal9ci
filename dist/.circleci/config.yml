@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: juampynr/d8cidemo:latest
+      - image: juampynr/drupal8ci:latest
 
       - image: mariadb:10.3
         environment:
