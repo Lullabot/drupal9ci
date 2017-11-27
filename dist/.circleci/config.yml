@@ -1,0 +1,59 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: juampynr/d8cidemo:latest
+
+      - image: mariadb:10.3
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 1
+
+      # Use Andrew's phantomjs fork until https://github.com/wernight/docker-phantomjs/pull/3 is
+      # merged.
+      # - image: wernight/phantomjs:2.1.1
+      - image: andrewberry/docker-phantomjs:v2.1.1-patch1
+        command: [phantomjs, --webdriver=8910]
+
+    working_directory: /var/www/html
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "composer.json" }}
+          - v1-dependencies-
+
+      - run: robo add:coding-standards-deps
+
+      - run: robo add:behat-deps
+
+      - run: robo update:dependencies
+
+      - save_cache:
+          paths:
+            - ./vendor
+          key: v1-dependencies-{{ checksum "composer.json" }}
+
+      - run: robo setup:drupal admin admin
+
+      - run: cp .circleci/config/phpunit.xml web/core
+
+      - run: cp .circleci/config/behat.yml tests/
+
+      - run:
+          name: Unit and Kernel tests
+          command: |
+            cd web
+            ../vendor/bin/phpunit -c core --verbose --debug modules/custom
+
+      - run:
+          name: Behat tests
+          command: |
+            cd web
+            apache2-foreground&
+            ../vendor/bin/behat --verbose -c ../tests/behat.yml

@@ -1,0 +1,4 @@
+services:
+  demo_module.example_service:
+    class: Drupal\demo_module\DemoModuleExampleService
+    arguments: ['@entity_type.manager']
