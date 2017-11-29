@@ -3,6 +3,8 @@
 This repository provides the foundation to implement [Continutous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
 project using [CircleCI](https://circleci.com/).
 
+For a working example, checkout https://github.com/juampynr/d8cidemo.
+
 It contains:
 
 - A custom demo module with a [unit and a kernel test](web/modules/custom/demo_module/tests/src).
