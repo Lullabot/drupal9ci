@@ -31,6 +31,20 @@ adjust the CircleCI scripts so they can run successfully.
 curl -L https://github.com/juampynr/drupal8ci/raw/master/setup.sh | bash
 ```
 2. Sign up at CircleCI and allow access to your project.
-3. Create a branch, commit your changes and create a pull request.
+3. Create a branch, review and commit your changes and create a pull request.
 4. Wait for CircleCI to add a status message at the pull request.
 5. Happy CI-ing! :-D
+
+## Running CircleCI jobs locally
+
+1. Install [CircleCI CLI](https://circleci.com/docs/2.0/local-jobs/#installing-the-cli-locally).
+2. Rename `web/sites/default/settings.php` to something else. In theory this file
+   should be skipped by CircleCI when it builds the image thanks to `.dockerignore` but
+   this is currently not working.
+3. The `.circleci/config.yml` defines a workflow with two jobs: run-tests and run-update-path.
+   You can't run the workflow but you can run the jobs with the following commands:
+
+```
+circleci build --job run-update-path
+circleci build --job run-unit-kernel-tests
+```

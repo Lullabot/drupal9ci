@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     libmcrypt-dev \
     libpng-dev \
     mariadb-client \
+    sudo \
     unzip \
     vim \
     wget \

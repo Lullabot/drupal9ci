@@ -1,59 +1,165 @@
-# PHP CircleCI 2.0 configuration file
+# Runs a set of CI jobs for Drupal 8 projects.
 #
 # Check https://circleci.com/docs/2.0/language-php/ for more details
 #
+
+defaults: &defaults
+  docker:
+    # specify the version you desire here (avoid latest except for testing)
+    - image: juampynr/drupal8ci:latest
+
+    # Use our fork until https://github.com/wernight/docker-phantomjs/pull/3 is
+    # merged.
+    # - image: wernight/phantomjs:2.1.1
+    - image: selenium/standalone-chrome-debug:3.7.1-beryllium
+
+    - image: mariadb:10.3
+      environment:
+        MYSQL_ALLOW_EMPTY_PASSWORD: 1
+
+    # Specify service dependencies here if necessary
+    # CircleCI maintains a library of pre-built images
+    # documented at https://circleci.com/docs/2.0/circleci-images/
+    # - image: circleci/mysql:9.4
+
+  # 'checkout' supports a path key, but not on locals where you test with the
+  # circleci CLI tool.
+  # https://discuss.circleci.com/t/bug-circleci-build-command-ignores-checkout-path-config/13004
+  working_directory: /var/www/html
+
+# YAML does not support merging of lists. That means we can't have a default
+# 'steps' configuration, though we can have defaults for individual step
+# properties.
+
+# We use the composer.json as a way to determine if we can cache our build.
+restore_cache: &restore_cache
+  keys:
+  - v1-dependencies-{{ checksum "composer.json" }}
+  # fallback to using the latest cache if no exact match is found
+  - v1-dependencies-
+
+# If composer.json hasn't changed, restore the vendor directory. We don't
+# restore the lock file so we ensure we get updated dependencies.
+save_cache: &save_cache
+  paths:
+    - ./vendor
+  key: v1-dependencies-{{ checksum "composer.json" }}
+
+# Run Drupal unit and kernel tests as one job. This command invokes the test.sh
+# hook.
+unit_kernel_tests: &unit_kernel_tests
+  <<: *defaults
+  steps:
+    - checkout
+
+    - restore_cache: *restore_cache
+    - save_cache: *save_cache
+
+    - run:
+        command: |
+          apache2-foreground&
+          robo update:dependencies
+          cp .circleci/config/phpunit.xml web/core/
+          cd web
+          sudo -E -u www-data ../vendor/bin/phpunit -c core --debug --verbose --log-junit artifacts/phpunit/phpunit.xml modules/custom
+
+    - store_test_results:
+        path: /var/www/html/artifacts/phpunit
+    - store_artifacts:
+        path: /var/www/html/artifacts
+
+# Run Behat tests. This command invokes the test-js.sh hook.
+behat_tests: &behat_tests
+  <<: *defaults
+  steps:
+    - checkout
+
+    - restore_cache: *restore_cache
+    - save_cache: *save_cache
+
+    - run:
+        command: |
+          apache2-foreground&
+          robo add:behat-deps
+          robo update:dependencies
+          robo setup:drupal || true
+          cp .circleci/config/behat.yml tests/
+          chown -R www-data:www-data /var/www/html/web/sites/default/files
+          ../vendor/bin/behat --verbose -c ../tests/behat.yml
+
+    - store_test_results:
+        path: /var/www/html/artifacts/behat
+    - store_artifacts:
+        path: /var/www/html/artifacts
+
+# Run code quality tests. This invokes code-sniffer.sh.
+code_sniffer: &code_sniffer
+  <<: *defaults
+  steps:
+    - checkout
+
+    - restore_cache: *restore_cache
+    - save_cache: *save_cache
+
+    - run:
+        command: |
+          robo add:coding-standards-deps
+          robo update:dependencies
+
+          # Install dependencies and configure phpcs
+          vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer web/modules/custom
+          vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
+
+    - store_test_results:
+        path: /var/www/html/artifacts/phpcs
+    - store_artifacts:
+        path: /var/www/html/artifacts
+
+# Run code coverage tests. This invokes code-coverage-stats.sh.
+code_coverage: &code_coverage
+  <<: *defaults
+  steps:
+    - checkout
+
+    - restore_cache: *restore_cache
+    - save_cache: *save_cache
+
+    - run:
+        environment:
+          SIMPLETEST_BASE_URL: "http://localhost"
+          SIMPLETEST_DB: "sqlite://localhost//tmp/drupal.sqlite"
+          BROWSERTEST_OUTPUT_DIRECTORY: "/var/www/html/sites/simpletest"
+        command: |
+          robo update:dependencies
+          cp .circleci/config/phpunit.xml web/core/
+          cd web
+          timeout 60m sudo -E -u www-data robo test:coverage modules/custom artifacts || true
+          tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
+
+    - store_artifacts:
+        path: /var/www/html/artifacts
+
+# Declare all of the jobs we should run.
 version: 2
 jobs:
-  build:
-    docker:
-      - image: juampynr/drupal8ci:latest
+  run-unit-kernel-tests:
+     <<: *unit_kernel_tests
+  run-behat-tests:
+     <<: *behat_tests
+  run-code-sniffer:
+     <<: *code_sniffer
+  run-code-coverage:
+     <<: *code_coverage
 
-      - image: mariadb:10.3
-        environment:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 1
+workflows:
+  version: 2
 
-      # Use Andrew's phantomjs fork until https://github.com/wernight/docker-phantomjs/pull/3 is
-      # merged.
-      # - image: wernight/phantomjs:2.1.1
-      - image: andrewberry/docker-phantomjs:v2.1.1-patch1
-        command: [phantomjs, --webdriver=8910]
-
-    working_directory: /var/www/html
-
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "composer.json" }}
-          - v1-dependencies-
-
-      - run: robo add:coding-standards-deps
-
-      - run: robo add:behat-deps
-
-      - run: robo update:dependencies
-
-      - save_cache:
-          paths:
-            - ./vendor
-          key: v1-dependencies-{{ checksum "composer.json" }}
-
-      - run: robo setup:drupal admin admin
-
-      - run: cp .circleci/config/phpunit.xml web/core
-
-      - run: cp .circleci/config/behat.yml tests/
-
-      - run:
-          name: Unit and Kernel tests
-          command: |
-            cd web
-            ../vendor/bin/phpunit -c core --verbose --debug modules/custom
-
-      - run:
-          name: Behat tests
-          command: |
-            cd web
-            apache2-foreground&
-            ../vendor/bin/behat --verbose -c ../tests/behat.yml
+  # Declare a workflow that runs all of our jobs in parallel.
+  test_and_lint:
+    jobs:
+      - run-unit-kernel-tests
+      - run-behat-tests
+      - run-code-sniffer
+      - run-code-coverage:
+          requires:
+            - run-unit-kernel-tests
