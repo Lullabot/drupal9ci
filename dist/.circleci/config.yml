@@ -59,10 +59,11 @@ unit_kernel_tests: &unit_kernel_tests
         command: |
           apache2-foreground&
           robo update:dependencies
+          robo setup:drupal || true
           cp .circleci/config/phpunit.xml web/core/
+          mkdir -p artifacts/phpunit
           cd web
-          sudo -E -u www-data ../vendor/bin/phpunit -c core --debug --verbose --log-junit artifacts/phpunit/phpunit.xml modules/custom
-
+          sudo -E -u www-data ../vendor/bin/phpunit -c core --debug --verbose --log-junit ../artifacts/phpunit/phpunit.xml modules/custom
     - store_test_results:
         path: /var/www/html/artifacts/phpunit
     - store_artifacts:
@@ -85,14 +86,14 @@ behat_tests: &behat_tests
           robo setup:drupal || true
           cp .circleci/config/behat.yml tests/
           chown -R www-data:www-data /var/www/html/web/sites/default/files
-          ../vendor/bin/behat --verbose -c ../tests/behat.yml
+          vendor/bin/behat --verbose -c tests/behat.yml
 
     - store_test_results:
         path: /var/www/html/artifacts/behat
     - store_artifacts:
         path: /var/www/html/artifacts
 
-# Run code quality tests. This invokes code-sniffer.sh.
+# Run code quality tests.
 code_sniffer: &code_sniffer
   <<: *defaults
   steps:
@@ -108,7 +109,9 @@ code_sniffer: &code_sniffer
 
           # Install dependencies and configure phpcs
           vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer web/modules/custom
+          mkdir -p artifacts/phpcs
           vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
+          vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
 
     - store_test_results:
         path: /var/www/html/artifacts/phpcs
@@ -131,9 +134,11 @@ code_coverage: &code_coverage
           BROWSERTEST_OUTPUT_DIRECTORY: "/var/www/html/sites/simpletest"
         command: |
           robo update:dependencies
+          robo setup:drupal || true
           cp .circleci/config/phpunit.xml web/core/
-          cd web
-          timeout 60m sudo -E -u www-data robo test:coverage modules/custom artifacts || true
+          mkdir -p artifacts/coverage-xml
+          mkdir -p artifacts/coverage-html
+          timeout 60m sudo -E -u www-data vendor/bin/phpunit --verbose --debug -c web/core --coverage-xml ../artifacts/coverage-xml --coverage-html ../artifacts/coverage-html web/modules/custom
           tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
 
     - store_artifacts:

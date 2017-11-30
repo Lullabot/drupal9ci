@@ -16,8 +16,8 @@ default:
           goutte: ~
         javascript:
           selenium2:
-            browser: phantomjs
-            wd_host: http://localhost:8910/wd/hub
+            browser: chrome
+            wd_host: http://localhost:4444/wd/hub
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: 'drupal'

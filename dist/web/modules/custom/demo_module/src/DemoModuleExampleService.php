@@ -29,7 +29,7 @@ class DemoModuleExampleService {
   /**
    * Retrieves the last created node.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|FALSE
+   * @return \Drupal\Core\Entity\EntityInterface|false
    *   A node entity or FALSE if none was found.
    */
   public function getLastNode() {
