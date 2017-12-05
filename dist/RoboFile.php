@@ -45,6 +45,7 @@ class RoboFile extends \Robo\Tasks
         $config = json_decode(file_get_contents('composer.json'));
         $config->require->{"behat/mink-selenium2-driver"} = "^1.3";
         $config->require->{"drupal/drupal-extension"} = "master-dev";
+        $config->require->{"behat/mink-extension"} = "2.3.0";
         $config->require->{"drush/drush"} = "~8.1";
         $config->require->{"guzzlehttp/guzzle"} = "^6.0@dev";
         if (empty($config->extra->{"patches"})) {
