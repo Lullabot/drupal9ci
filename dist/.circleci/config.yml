@@ -62,6 +62,7 @@ unit_kernel_tests: &unit_kernel_tests
           robo setup:drupal || true
           cp .circleci/config/phpunit.xml web/core/
           mkdir -p artifacts/phpunit
+          chmod -R 777 artifacts
           cd web
           sudo -E -u www-data ../vendor/bin/phpunit -c core --debug --verbose --log-junit ../artifacts/phpunit/phpunit.xml modules/custom
     - store_test_results:
@@ -107,9 +108,9 @@ code_sniffer: &code_sniffer
           robo add:coding-standards-deps
           robo update:dependencies
 
-          # Install dependencies and configure phpcs
           vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer web/modules/custom
           mkdir -p artifacts/phpcs
+
           vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
           vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
 
@@ -138,7 +139,10 @@ code_coverage: &code_coverage
           cp .circleci/config/phpunit.xml web/core/
           mkdir -p artifacts/coverage-xml
           mkdir -p artifacts/coverage-html
-          timeout 60m sudo -E -u www-data vendor/bin/phpunit --verbose --debug -c web/core --coverage-xml ../artifacts/coverage-xml --coverage-html ../artifacts/coverage-html web/modules/custom
+          chmod -R 777 artifacts
+          cd web
+          timeout 60m sudo -E -u www-data ../vendor/bin/phpunit --verbose --debug -c core --coverage-xml ../artifacts/coverage-xml --coverage-html ../artifacts/coverage-html --testsuite nonfunctional modules/custom
+          cd ../
           tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
 
     - store_artifacts:
@@ -165,6 +169,4 @@ workflows:
       - run-unit-kernel-tests
       - run-behat-tests
       - run-code-sniffer
-      - run-code-coverage:
-          requires:
-            - run-unit-kernel-tests
+      - run-code-coverage

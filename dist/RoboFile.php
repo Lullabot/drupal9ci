@@ -47,6 +47,17 @@ class RoboFile extends \Robo\Tasks
         $config->require->{"drupal/drupal-extension"} = "master-dev";
         $config->require->{"drush/drush"} = "~8.1";
         $config->require->{"guzzlehttp/guzzle"} = "^6.0@dev";
+        if (empty($config->extra->{"patches"})) {
+          $config->extra->{"patches"}= new \stdClass();
+        }
+        // Fixes a bug that makes Behat to use Firefox instead of Chrome.
+        // @see https://github.com/Behat/MinkExtension/pull/311.
+        $config->extra->{"patches"} = (object) array_merge((array) $config->extra->{"patches"},
+          [
+            "behat/mink-extension" => [
+              "Fix Behat/MinkExtension#309 Firefox starts instead of Chrome #311" => "https://github.com/Behat/MinkExtension/pull/311.diff",
+            ],
+          ]);
         file_put_contents('composer.json', json_encode($config));
     }
 

@@ -40,6 +40,10 @@
     <testsuite name="functional">
       <file>./tests/TestSuites/FunctionalTestSuite.php</file>
     </testsuite>
+    <testsuite name="nonfunctional">
+      <file>./tests/TestSuites/UnitTestSuite.php</file>
+      <file>./tests/TestSuites/KernelTestSuite.php</file>
+    </testsuite>
   </testsuites>
   <listeners>
     <listener class="\Drupal\Tests\Listeners\DrupalStandardsListener">
@@ -47,11 +51,11 @@
   </listeners>
   <!-- Filter for coverage reports. -->
   <filter>
-    <whitelist>
-      <directory>modules/custom</directory>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory>../modules/custom</directory>
       <!-- By definition test classes have no tests. -->
       <exclude>
-        <directory>modules/custom/*/tests</directory>
+        <directory>../modules/custom/*/tests</directory>
       </exclude>
     </whitelist>
   </filter>
