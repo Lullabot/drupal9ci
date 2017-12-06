@@ -5,31 +5,15 @@
 
 defaults: &defaults
   docker:
-    # specify the version you desire here (avoid latest except for testing)
     - image: juampynr/drupal8ci:latest
 
-    # Use our fork until https://github.com/wernight/docker-phantomjs/pull/3 is
-    # merged.
-    # - image: wernight/phantomjs:2.1.1
     - image: selenium/standalone-chrome-debug:3.7.1-beryllium
 
     - image: mariadb:10.3
       environment:
         MYSQL_ALLOW_EMPTY_PASSWORD: 1
 
-    # Specify service dependencies here if necessary
-    # CircleCI maintains a library of pre-built images
-    # documented at https://circleci.com/docs/2.0/circleci-images/
-    # - image: circleci/mysql:9.4
-
-  # 'checkout' supports a path key, but not on locals where you test with the
-  # circleci CLI tool.
-  # https://discuss.circleci.com/t/bug-circleci-build-command-ignores-checkout-path-config/13004
   working_directory: /var/www/html
-
-# YAML does not support merging of lists. That means we can't have a default
-# 'steps' configuration, though we can have defaults for individual step
-# properties.
 
 # We use the composer.json as a way to determine if we can cache our build.
 restore_cache: &restore_cache
@@ -45,8 +29,6 @@ save_cache: &save_cache
     - ./vendor
   key: v1-dependencies-{{ checksum "composer.json" }}
 
-# Run Drupal unit and kernel tests as one job. This command invokes the test.sh
-# hook.
 unit_kernel_tests: &unit_kernel_tests
   <<: *defaults
   steps:
@@ -56,9 +38,10 @@ unit_kernel_tests: &unit_kernel_tests
     - save_cache: *save_cache
 
     - run:
+        name: Set up and run tests
         command: |
           apache2-foreground&
-          robo update:dependencies
+          robo install:dependencies
           robo setup:drupal || true
           cp .circleci/config/phpunit.xml web/core/
           mkdir -p artifacts/phpunit
@@ -70,19 +53,23 @@ unit_kernel_tests: &unit_kernel_tests
     - store_artifacts:
         path: /var/www/html/artifacts
 
-# Run Behat tests. This command invokes the test-js.sh hook.
 behat_tests: &behat_tests
   <<: *defaults
   steps:
     - checkout
 
+    - run:
+        name: Add dependencies
+        command: |
+          robo add:behat-deps
+
     - restore_cache: *restore_cache
     - save_cache: *save_cache
 
     - run:
+        name: Set up and run tests
         command: |
           apache2-foreground&
-          robo add:behat-deps
           robo update:dependencies
           robo setup:drupal || true
           cp .circleci/config/behat.yml tests/
@@ -94,20 +81,23 @@ behat_tests: &behat_tests
     - store_artifacts:
         path: /var/www/html/artifacts
 
-# Run code quality tests.
 code_sniffer: &code_sniffer
   <<: *defaults
   steps:
     - checkout
 
+    - run:
+        name: Add dependencies
+        command: |
+          robo add:coding-standards-deps
+
     - restore_cache: *restore_cache
     - save_cache: *save_cache
 
     - run:
+        name: Set up and run tests
         command: |
-          robo add:coding-standards-deps
           robo update:dependencies
-
           vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer web/modules/custom
           mkdir -p artifacts/phpcs
 
@@ -134,7 +124,7 @@ code_coverage: &code_coverage
           SIMPLETEST_DB: "sqlite://localhost//tmp/drupal.sqlite"
           BROWSERTEST_OUTPUT_DIRECTORY: "/var/www/html/sites/simpletest"
         command: |
-          robo update:dependencies
+          robo install:dependencies
           robo setup:drupal || true
           cp .circleci/config/phpunit.xml web/core/
           mkdir -p artifacts/coverage-xml

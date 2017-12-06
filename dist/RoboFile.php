@@ -52,6 +52,16 @@ class RoboFile extends \Robo\Tasks
         file_put_contents('composer.json', json_encode($config));
     }
 
+  /**
+   * Installs composer dependencies.
+   */
+  public function installDependencies()
+  {
+    $this->taskComposerInstall()
+      ->optimizeAutoloader()
+      ->run();
+  }
+
     /**
      * Updates composer dependencies.
      */
