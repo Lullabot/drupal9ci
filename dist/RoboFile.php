@@ -27,40 +27,16 @@ class RoboFile extends \Robo\Tasks
      */
     const DB_URL = 'mysql://root@127.0.0.1/drupal8';
 
-    /**
-     * Adds coding standard dependencies.
-     */
-    public function addCodingStandardsDeps()
-    {
-        $config = json_decode(file_get_contents('composer.json'));
-        $config->require->{"drupal/coder"} = "^8.2";
-        file_put_contents('composer.json', json_encode($config));
-    }
 
     /**
-     * Adds Behat dependencies.
+     * Installs composer dependencies.
      */
-    public function addBehatDeps()
+    public function installDependencies()
     {
-        $config = json_decode(file_get_contents('composer.json'));
-        $config->require->{"behat/mink-selenium2-driver"} = "^1.3";
-        $config->require->{"drupal/drupal-extension"} = "master-dev";
-        // Pin version until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
-        $config->require->{"behat/mink-extension"} = "v2.2";
-        $config->require->{"drush/drush"} = "~8.1";
-        $config->require->{"guzzlehttp/guzzle"} = "^6.0@dev";
-        file_put_contents('composer.json', json_encode($config));
+        $this->taskComposerInstall()
+          ->optimizeAutoloader()
+          ->run();
     }
-
-  /**
-   * Installs composer dependencies.
-   */
-  public function installDependencies()
-  {
-    $this->taskComposerInstall()
-      ->optimizeAutoloader()
-      ->run();
-  }
 
     /**
      * Updates composer dependencies.
