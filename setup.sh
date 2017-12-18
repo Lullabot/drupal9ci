@@ -10,7 +10,7 @@ rm -rf drupal8ci-master
 # Add development dependencies to run the CircleCI jobs.
 #
 # behat/mink-extension is pinned until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
-composer require --dev --no-update \
+composer require --dev \
     cweagans/composer-patches \
     behat/mink-extension:v2.2 \
     behat/mink-selenium2-driver:^1.3 \
