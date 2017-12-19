@@ -52,5 +52,5 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 # Install ImageMagic to take screenshots.
 # We use imagemagick to support behat screenshots
-RUN pecl install imagick
-RUN echo 'extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/imagick.so' > /usr/local/etc/php/conf.d/imagick.ini
+RUN pecl install imagick \
+    && docker-php-ext-enable imagick
