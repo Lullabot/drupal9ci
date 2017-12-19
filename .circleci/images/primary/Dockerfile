@@ -8,9 +8,11 @@ RUN apt-get update && apt-get install -y \
     bzip2 \
     curl \
     git \
+    imagemagick \
     libfontconfig \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
+    libmagickwand-dev \
     libmcrypt-dev \
     libpng-dev \
     mariadb-client \
@@ -47,3 +49,8 @@ ENV DOCKERIZE_VERSION v0.6.0
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+# Install ImageMagic to take screenshots.
+# We use imagemagick to support behat screenshots
+RUN pecl install imagick
+RUN echo 'extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/imagick.so' > /usr/local/etc/php/conf.d/imagick.ini
