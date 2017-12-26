@@ -4,6 +4,7 @@ FROM php:7.0-apache
 RUN sed -ri -e 's!/var/www/html!/var/www/html/web!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www!/var/www/html/web!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# Install libraries and extensions.
 RUN apt-get update && apt-get install -y \
     bzip2 \
     curl \
@@ -44,13 +45,12 @@ RUN pecl install xdebug-2.5.5 \
 RUN wget https://github.com/consolidation/Robo/releases/download/1.1.5/robo.phar
 RUN chmod +x robo.phar && mv robo.phar /usr/local/bin/robo
 
-# Install Dockerize
+# Install Dockerize.
 ENV DOCKERIZE_VERSION v0.6.0
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 # Install ImageMagic to take screenshots.
-# We use imagemagick to support behat screenshots
 RUN pecl install imagick \
     && docker-php-ext-enable imagick

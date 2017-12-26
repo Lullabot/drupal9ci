@@ -3,7 +3,10 @@
 [![CircleCI](https://circleci.com/gh/juampynr/drupal8ci.svg?style=svg)](https://circleci.com/gh/juampynr/drupal8ci)
 
 This repository provides the foundation to implement [Continutous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
-project using [CircleCI](https://circleci.com/).
+project using [CircleCI](https://circleci.com/). After running the below script on a Drupal 8 project
+and allowing CircleCI to access the repository, new pull requests will have the following checks:
+
+![Passing jobs](docs/images/passing.png)
 
 For a working example, checkout https://github.com/juampynr/d8cidemo.
 
@@ -11,8 +14,9 @@ Here is a clip that shows how it works: https://www.youtube.com/watch?v=wd_5mX0x
 
 ## Contents
 
-- A custom demo module with a [unit and a kernel test](web/modules/custom/demo_module/tests/src).
-- A demo [Behat test](tests).
+- A [Dockerfile](https://hub.docker.com/r/juampynr/drupal8ci/) that sets up an environment to run a Drupal 8 site.
+- A custom demo module with [unit and a kernel tests](web/modules/custom/demo_module/tests/src).
+- Sample [Behat tests](tests).
 - A CircleCI workflow that, when code is pushed to GitHub:
     * Runs Unit and Kernel tests.
     * Generates a test coverage report.
@@ -24,7 +28,7 @@ If you want to test and individual module instead of a Drupal project, see Andre
 
 ## Requirements
 
-The scripts assume that your site was installed using [Composer Drupal Project](https://github.com/drupal-composer/drupal-project)
+The scripts assume that the Drupal 8 project was created using [Composer Drupal Project](https://github.com/drupal-composer/drupal-project)
 which sets a well known foundation for Drupal 8 projects. If your project's directory
 structure differs from what Composer Drupal Project sets up, you will need to
 adjust the CircleCI scripts so they can run successfully.
