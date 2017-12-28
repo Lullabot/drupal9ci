@@ -20,7 +20,7 @@ drupal8ci_install() {
 	# Download and extract CircleCI configuration and sample tests.
 	wget -O "$tmpdir/master.zip" https://github.com/juampynr/drupal8ci/archive/master.zip
 	unzip "$tmpdir/master.zip" 'drupal8ci-master/dist/*' -d "$tmpdir"
-	rsync -vaz "$tmpdir/drupal8ci-master/dist/" .
+	rsync -vaz --ignore-existing "$tmpdir/drupal8ci-master/dist/" .
 
 	# Add development dependencies to run the CircleCI jobs.
 	#
