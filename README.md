@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/juampynr/drupal8ci.svg?style=svg)](https://circleci.com/gh/juampynr/drupal8ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
-project using [CircleCI](https://circleci.com/). After running the following script on a Drupal 8 project
+project using [CircleCI](https://circleci.com/). After [installing](#installation) on a Drupal 8 project
 and allowing CircleCI to access the repository, new pull requests will have the following checks:
 
 ![Passing jobs](docs/images/passing.png)
