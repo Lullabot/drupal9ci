@@ -14,9 +14,10 @@ drupal8ci_install() {
 	tmpdir=`mktemp -d`
 	# Now that we've created a temp dir, clean up after ourselves on exit.
 	trap "cleanup $tmpdir" EXIT
+	# Turn on error detection and trap errors.
+	trap "echoerr 'An unexpected error was encountered. Installation failed.'" ERR
+	set -e
 
-	# Turn on xtracing and error detection so users know what's happening.
-	set -ex
 	# Download and extract CircleCI configuration and sample tests.
 	wget -O "$tmpdir/master.zip" https://github.com/juampynr/drupal8ci/archive/master.zip
 	unzip "$tmpdir/master.zip" 'drupal8ci-master/dist/*' -d "$tmpdir"
@@ -25,22 +26,43 @@ drupal8ci_install() {
 	# Add development dependencies to run the CircleCI jobs.
 	#
 	# behat/mink-extension is pinned until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
-	composer require --dev \
-		cweagans/composer-patches \
-		behat/mink-extension:v2.2 \
-		behat/mink-selenium2-driver:^1.3 \
-		bex/behat-screenshot \
-		drupal/coder:^8.2 \
-		drupal/drupal-extension:master-dev \
-		drush/drush:~8.1 \
+	all_dev_deps=(
+		cweagans/composer-patches
+		behat/mink-extension:v2.2
+		behat/mink-selenium2-driver:^1.3
+		bex/behat-screenshot
+		drupal/coder:^8.2
+		drupal/drupal-extension:master-dev
+		drush/drush:~8.1
 		guzzlehttp/guzzle:^6.0@dev
+	)
+	# Find out what packages are already required.
+	installed_deps=`composer show -ND`
+	# Determine which of these dependencies are not already installed by using
+	# uniq -u. We don't want to re-install existing dependencies as require-dev.
+	# We also don't want any of the items in $installed_deps to show up here, so
+	# we echo those packages twice to ensure they don't. In other words, the only
+	# packages that would end up in $dev_deps are just ones that only occur once.
+	dev_deps=`echo "${all_dev_deps[@]%:*} $installed_deps $installed_deps" |
+		tr ' ' '\n' |
+		sort |
+		uniq -u`
+
+	# Only run composer install if we found some dependencies to add.
+	if [[ -n $dev_deps ]]; then
+		# Now find the dev dependencies with versions above from the $all_dev_deps
+		# array. We do this by printing out the array as multiline, and passing it
+		# to grep, checking for the presence of any of the items in $dev_deps.
+		dev_deps_to_install=`printf '%s\n' "${all_dev_deps[@]}" | grep -E "(${dev_deps//[[:space:]]/|})"`
+		composer require --dev $dev_deps_to_install
+	fi
 }
 
 #######################################
 # Helper function to output a string to stderr and exit.
 #######################################
 echoerr() {
-	echo "$@" 1>&2;
+	echo "$@" 1>&2
 	exit 23
 }
 
