@@ -37,18 +37,18 @@ drupal8ci_install() {
 		guzzlehttp/guzzle:^6.0@dev
 	)
 	# Find out what packages are already required.
-	installed_deps=`composer show -ND`
+	existing_packages=`composer show -ND`
 	# Determine which of these dependencies are not already installed by using
 	# uniq -u. We don't want to re-install existing dependencies as require-dev.
-	# We also don't want any of the items in $installed_deps to show up here, so
+	# We also don't want any of the items in $existing_packages to show up here so
 	# we echo those packages twice to ensure they don't. In other words, the only
 	# packages that would end up in $dev_deps are just ones that only occur once.
-	dev_deps=`echo "${all_dev_deps[@]%:*} $installed_deps $installed_deps" |
+	dev_deps=`echo "${all_dev_deps[@]%:*} $existing_packages $existing_packages" |
 		tr ' ' '\n' |
 		sort |
 		uniq -u`
 
-	# Only run composer install if we found some dependencies to add.
+	# Only run composer install if we found some packages to install.
 	if [[ -n $dev_deps ]]; then
 		# Now find the dev dependencies with versions above from the $all_dev_deps
 		# array. We do this by printing out the array as multiline, and passing it
