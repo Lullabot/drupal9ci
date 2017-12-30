@@ -67,6 +67,9 @@ behat_tests: &behat_tests
           robo install:dependencies
           robo setup:drupal || true
           cd web
+          # For a quick start, set the following environment variable to a URL that contains
+          # a database dump. Alternativelly, give CircleCI access to your development environment
+          # and use Drush site aliases to run `drush sql-sync`.
           wget -O dump.sql $DB_DUMP_URL
           ../vendor/bin/drush sql-cli < dump.sql
           ../vendor/bin/drush updatedb -y -v
