@@ -26,14 +26,11 @@ drupal8ci_install() {
 	#
 	# behat/mink-extension is pinned until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
 	composer require --dev \
-		cweagans/composer-patches \
 		behat/mink-extension:v2.2 \
 		behat/mink-selenium2-driver:^1.3 \
 		bex/behat-screenshot \
 		drupal/coder:^8.2 \
-		drupal/drupal-extension:master-dev \
-		drush/drush:~8.1 \
-		guzzlehttp/guzzle:^6.0@dev
+		drupal/drupal-extension:master-dev
 }
 
 #######################################
