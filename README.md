@@ -1,6 +1,6 @@
 # Drupal 8 CI
 
-[![CircleCI](https://circleci.com/gh/juampynr/drupal8ci.svg?style=svg)](https://circleci.com/gh/juampynr/drupal8ci)
+[![CircleCI](https://circleci.com/gh/lullabot/drupal8ci.svg?style=svg)](https://circleci.com/gh/lullabot/drupal8ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
 project using [CircleCI](https://circleci.com/). After [installing](#installation) on a Drupal 8 project
@@ -38,7 +38,7 @@ adjust the CircleCI scripts so they can run successfully.
 1. Make sure that you don't have changes pending to commit in your local environment.
 2. Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/juampynr/drupal8ci/raw/master/setup.sh | bash
+curl -L https://github.com/lullabot/drupal8ci/raw/master/setup.sh | bash
 ```
 3. Review, commit and push the set of changes.
 4. Sign up at [CircleCI](https://circleci.com/) and allow access to your project's repository.
