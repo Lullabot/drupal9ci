@@ -3,35 +3,31 @@
 [![CircleCI](https://circleci.com/gh/lullabot/drupal8ci.svg?style=svg)](https://circleci.com/gh/lullabot/drupal8ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
-project using [CircleCI](https://circleci.com/). After [installing](#installation) on a Drupal 8 project
-and allowing CircleCI to access the repository, new pull requests will have the following checks:
+project using [CircleCI](https://circleci.com/) and [Travis](https://travis-ci.org) against a GitHub repository.
 
-![Passing jobs](docs/images/passing.png)
+Simply run the installer (details below) and allow the CI provider to watch repository changes
+to start building on every pull request.
 
 For a working example, checkout https://github.com/juampynr/d8cidemo.
 
-Here is a clip that shows how it works: https://www.youtube.com/watch?v=wd_5mX0x4K8.
-
-## Contents
-
-- A [Dockerfile](https://hub.docker.com/r/juampynr/drupal8ci/) that sets up an environment to run a Drupal 8 site.
-- A custom demo module with [unit and kernel tests](web/modules/custom/demo_module/tests/src).
-- Sample [Behat tests](tests).
-- A CircleCI workflow that, when code is pushed to GitHub:
-    * Runs unit and kernel tests.
-    * Generates a test coverage report.
-    * Tests the [Update Path](https://gist.github.com/juampynr/3c14c4267cc505720a0a4598e6a5ef8f) and runs Behat tests.
-    * Checks that custom modules follow [Drupal's coding standards](https://www.drupal.org/docs/develop/standards) and best practices.
-
 If you want to test an individual module instead of a Drupal project, see Andrew Berry's
 [drupal_tests](https://github.com/deviantintegral/drupal_tests).
+
+Here is a clip that shows how it works for CircleCI: https://www.youtube.com/watch?v=wd_5mX0x4K8.
 
 ## Requirements
 
 The scripts assume that the Drupal 8 project was created using [drupal-project](https://github.com/drupal-composer/drupal-project)
 which sets a well known foundation for Drupal 8 projects. If your project's directory
 structure differs from what _drupal-project_ sets up, you will need to
-adjust the CircleCI scripts so they can run successfully.
+adjust the CI jobs so they can run successfully.
+
+## CI implementations
+
+### CircleCI
+
+https://circleci.com
+
 
 ## Installation
 
@@ -40,12 +36,31 @@ adjust the CircleCI scripts so they can run successfully.
 ```bash
 curl -L https://github.com/lullabot/drupal8ci/raw/master/setup.sh | bash
 ```
-3. Review, commit and push the set of changes.
-4. Sign up at [CircleCI](https://circleci.com/) and allow access to your project's repository.
-5. Happy CI-ing! :-D. From now on every pull request that you create will have a link to the
-   CircleCI dashboard where jobs will run and report their result back at the pull request.
+3. The installer adds the following files to your repository:
+
+- A [Dockerfile](https://hub.docker.com/r/juampynr/drupal8ci/) that sets up an environment to run a Drupal 8 site.
+- A custom demo module with [unit and kernel tests](web/modules/custom/demo_module/tests/src).
+- Sample [Behat tests](tests).
+- Additionally, it provides CircleCI and Travis CI implementations for you to choose.
+
+Commit and push the set of changes.
+
+## Configuration
+
+### CircleCI
+
+https://circleci.com
+
+Sign up at [CircleCI](https://circleci.com/) and allow access to your project's repository.
+
+![CircleCI watch](docs/images/circleci-watch.png)
+
+Happy CI-ing! :-D. From now every time you create a pull request, CircleCI will run the
+set of jobs and report their result like in the following screenshot:
+
+![CircleCI pull request](docs/images/circleci-watch.png)
    
-### Setting up the update path
+#### Setting up the update path
 The Behat job requires a running Drupal 8 site. The repository contains the code, but for running
 tests in a realistic environment we need:
 
@@ -57,7 +72,7 @@ tests in a realistic environment we need:
   run `drush rsync @my.alias @self`. Alternatively, use the [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy)
   module.
 
-## Running CircleCI jobs locally
+#### Running CircleCI jobs locally
 
 You can run the same jobs locally although there may be a few gotchas. Here is how to get started:
 
@@ -72,3 +87,17 @@ You can run the same jobs locally although there may be a few gotchas. Here is h
 circleci build --job run-update-path
 circleci build --job run-unit-kernel-tests
 ```
+
+### Travis CI
+
+https://travis-ci.org/
+
+1. Sign up at [Travis CI](https://travis-ci.com/) and allow access to your project's repository:
+
+![Travis watch](docs/images/travis-watch.png)
+
+2. Happy CI-ing! :-D. From now on every pull request will trigger a build in Travis and its
+progress will be visible like in the following screenshot:
+
+![Travis pull request](docs/images/travis-pr.png)
+
