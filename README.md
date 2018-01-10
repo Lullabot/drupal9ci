@@ -5,7 +5,7 @@
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
 project using [CircleCI](https://circleci.com/) and [Travis](https://travis-ci.org) against a GitHub repository.
 
-Simply run the installer (details below) and allow the CI provider to watch repository changes
+Simply run the installer (details below) and allow the CI provider that you chose to watch repository changes
 to start building on every pull request.
 
 For a working example, checkout https://github.com/juampynr/d8cidemo.
@@ -22,13 +22,6 @@ which sets a well known foundation for Drupal 8 projects. If your project's dire
 structure differs from what _drupal-project_ sets up, you will need to
 adjust the CI jobs so they can run successfully.
 
-## CI implementations
-
-### CircleCI
-
-https://circleci.com
-
-
 ## Installation
 
 1. Make sure that you don't have changes pending to commit in your local environment.
@@ -37,19 +30,15 @@ https://circleci.com
 curl -L https://github.com/lullabot/drupal8ci/raw/master/setup.sh | bash
 ```
 3. The installer adds the following files to your repository:
+  - A custom demo module with [unit and kernel tests](web/modules/custom/demo_module/tests/src).
+  - Sample [Behat tests](tests).
+  - CircleCI and Travis CI implementations. At this point you should choose one. Currently
+    the CircleCI implementation has more features and is more tested than the Travis CI one.
 
-- A [Dockerfile](https://hub.docker.com/r/juampynr/drupal8ci/) that sets up an environment to run a Drupal 8 site.
-- A custom demo module with [unit and kernel tests](web/modules/custom/demo_module/tests/src).
-- Sample [Behat tests](tests).
-- Additionally, it provides CircleCI and Travis CI implementations for you to choose.
+### [CircleCI](https://circleci.com)
 
-Commit and push the set of changes.
-
-## Configuration
-
-### CircleCI
-
-https://circleci.com
+If you chose this CI provider, you can delete the `.travis.yml` file and `.travis` directory.
+Then commit and push the set of changes.
 
 Sign up at [CircleCI](https://circleci.com/) and allow access to your project's repository.
 
@@ -59,15 +48,26 @@ Happy CI-ing! :-D. From now every time you create a pull request, CircleCI will 
 set of jobs and report their result like in the following screenshot:
 
 ![CircleCI pull request](docs/images/circleci-watch.png)
+
+#### Using a custom Docker image
+
+The [.circleci/config.yml](dist/.circleci/config.yml) file uses a
+[custom Docker image](https://hub.docker.com/r/juampynr/drupal8ci/) that, although
+generic for Drupal 8 projects, may not fit yours. If this is the case, have a look at it's
+[Dockerfile](https://github.com/Lullabot/drupal8ci/blob/master/.circleci/images/primary/Dockerfile)
+and consider [creating your own image](https://circleci.com/docs/2.0/custom-images/).
    
 #### Setting up the update path
+
 The Behat job requires a running Drupal 8 site. The repository contains the code, but for running
-tests in a realistic environment we need:
+tests in a realistic environment you need:
 
 * A recent copy of the production or development environment. If you have Drush site aliases, then
-  add an SSH key to CircleCI so you can adjust the job to run `drush @my.alias sql-cli`.
-  Alternatively upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database dump somewhere (this project uses a Dropbox URL via an
-  environment variable).
+  at the CircleCI dashboard go to the project's permissions and add an SSH key
+  so you can then adjust the job to run `drush @my.alias sql-cli`.
+  Alternatively upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
+  dump somewhere. For example [the demo project uses a Dropbox URL](https://github.com/juampynr/d8cidemo/blob/master/.circleci/config.yml#L70)
+  via an environment variable.
 * The development or production environment's files directory. Again, if you have site aliases, then
   run `drush rsync @my.alias @self`. Alternatively, use the [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy)
   module.
@@ -88,9 +88,16 @@ circleci build --job run-update-path
 circleci build --job run-unit-kernel-tests
 ```
 
-### Travis CI
+### [Travis CI](https://travis-ci.org)
 
-https://travis-ci.org/
+If you chose this CI provider, you can delete the `.circleci` directory.
+Then commit and push the set of changes.
+
+The Travis CI implementation currently runs unit and kernel tests. If you are well versed in Travis CI,
+please give us a hand and [contribute](dist/.travis.yml) so we can reach feature parity with the CircleCI
+implementation.
+
+#### Installation
 
 1. Sign up at [Travis CI](https://travis-ci.com/) and allow access to your project's repository:
 
