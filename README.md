@@ -93,9 +93,9 @@ circleci build --job run-unit-kernel-tests
 If you chose this CI provider, you can delete the `.circleci` directory.
 Then commit and push the set of changes.
 
-The Travis CI implementation currently runs unit and kernel tests. If you are well versed in Travis CI,
-please give us a hand and [contribute](dist/.travis.yml) so we can reach feature parity with the CircleCI
-implementation.
+The Travis CI implementation currently runs unit and kernel tests, and checks Drupal's coding standards.
+If you are well versed in Travis CI, please give us a hand and [contribute](dist/.travis.yml) so we can
+reach feature parity with the CircleCI implementation.
 
 #### Installation
 
