@@ -98,7 +98,7 @@ code_sniffer: &code_sniffer
         name: Set up and inspect coding standards
         command: |
           robo install:dependencies
-          vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer web/modules/custom
+          vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer
           mkdir -p artifacts/phpcs
           vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
           vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
