@@ -33,7 +33,8 @@ curl -L https://github.com/lullabot/drupal8ci/raw/master/setup.sh | bash
   - A custom demo module with [unit and kernel tests](web/modules/custom/demo_module/tests/src).
   - Sample [Behat tests](tests).
   - CircleCI and Travis CI implementations. At this point you should choose one. Currently
-    the CircleCI implementation has more features and is more tested than the Travis CI one.
+    the CircleCI implementation has more features and is more tested than the Travis CI
+    implementation.
 
 ### [CircleCI](https://circleci.com)
 
@@ -51,11 +52,14 @@ set of jobs and report their result like in the following screenshot:
 
 #### Using a custom Docker image
 
-The [.circleci/config.yml](dist/.circleci/config.yml) file uses a
-[custom Docker image](https://hub.docker.com/r/juampynr/drupal8ci/) that, although
-generic for Drupal 8 projects, may not fit yours. If this is the case, have a look at it's
+The [CircleCI configuration file](dist/.circleci/config.yml) uses a
+[custom Docker image](https://hub.docker.com/r/juampynr/drupal8ci/) that extends from
+the [official Drupal image](https://hub.docker.com/_/drupal/) and it is [hosted at
+Docker Hub](https://hub.docker.com/r/juampynr/drupal8ci/). If this image
+does not fit your project's architecture, then have a look at its
 [Dockerfile](https://github.com/Lullabot/drupal8ci/blob/master/.circleci/images/primary/Dockerfile)
-and consider [creating your own image](https://circleci.com/docs/2.0/custom-images/).
+and consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
+based out of it.
    
 #### Setting up the update path
 
@@ -80,11 +84,10 @@ You can run the same jobs locally although there may be a few gotchas. Here is h
 2. Rename `web/sites/default/settings.php` to something else. In theory this file
    should be skipped by CircleCI when it builds the image thanks to `.dockerignore` but
    this is currently not working.
-3. The `.circleci/config.yml` defines a workflow with two jobs: `run-tests` and `run-update-path`.
-   You can't run the workflow but you can run the jobs with the following commands:
+3. The `.circleci/config.yml` defines a workflow with four jobs. You can't run the workflow but you
+   can run the jobs by adding them as options to the command like in the following example:
 
 ```
-circleci build --job run-update-path
 circleci build --job run-unit-kernel-tests
 ```
 
