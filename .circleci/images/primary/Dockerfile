@@ -1,33 +1,22 @@
-FROM php:7.0-apache
+FROM drupal:8.4-apache
+
+RUN apt-get update && apt-get install -y \
+  imagemagick \
+  libmagickwand-dev \
+  mariadb-client \
+  sudo \
+  vim \
+  wget \
+  && docker-php-ext-install mysqli \
+  && docker-php-ext-install pdo \
+  && docker-php-ext-install pdo_mysql
+
+# Remove the vanilla Drupal project that comes with this image.
+RUN rm -rf /var/www/html/*
 
 # Change docroot since we use Composer Drupal project.
 RUN sed -ri -e 's!/var/www/html!/var/www/html/web!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www!/var/www/html/web!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# Install libraries and extensions.
-RUN apt-get update && apt-get install -y \
-    bzip2 \
-    curl \
-    git \
-    imagemagick \
-    libfontconfig \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libmagickwand-dev \
-    libmcrypt-dev \
-    libpng-dev \
-    mariadb-client \
-    sudo \
-    unzip \
-    vim \
-    wget \
-    zip \
-    && docker-php-ext-install -j$(nproc) iconv mcrypt \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install mysqli \
-    && docker-php-ext-install pdo \
-    && docker-php-ext-install pdo_mysql
 
 # Install composer.
 RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/f3333f3bc20ab8334f7f3dada808b8dfbfc46088/web/installer -O - -q | php -- --quiet
