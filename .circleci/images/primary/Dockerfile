@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y \
   imagemagick \
   libmagickwand-dev \
   mariadb-client \
+  rsync \
   sudo \
   unzip \
   vim \
