@@ -50,6 +50,9 @@ set of jobs and report their result like in the following screenshot:
 
 ![CircleCI pull request](docs/images/circleci-watch.png)
 
+For an overview of the CircleCI features, have a look at
+[this article from the Lullabot blog](https://www.lullabot.com/articles/continuous-integration-drupal-8-circleci).
+
 #### Using a custom Docker image
 
 The [CircleCI configuration file](dist/.circleci/config.yml) uses a
