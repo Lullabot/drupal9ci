@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
   && docker-php-ext-install pdo_mysql
 
 # Remove the vanilla Drupal project that comes with this image.
-RUN rm -rf /var/www/html/*
+RUN rm -rf ..?* .[!.]* *
 
 # Change docroot since we use Composer Drupal project.
 RUN sed -ri -e 's!/var/www/html!/var/www/html/web!g' /etc/apache2/sites-available/*.conf
