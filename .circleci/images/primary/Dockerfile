@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
   libmagickwand-dev \
   mariadb-client \
   sudo \
+  unzip \
   vim \
   wget \
   && docker-php-ext-install mysqli \
