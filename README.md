@@ -48,7 +48,7 @@ Sign up at [CircleCI](https://circleci.com/) and allow access to your project's 
 Happy CI-ing! :-D. From now every time you create a pull request, CircleCI will run the
 set of jobs and report their result like in the following screenshot:
 
-![CircleCI pull request](docs/images/circleci-watch.png)
+![CircleCI pull request](docs/images/circleci-pr.png)
 
 For an overview of the CircleCI features, have a look at
 [this article from the Lullabot blog](https://www.lullabot.com/articles/continuous-integration-drupal-8-circleci).
