@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/Lullabot/drupal8ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal8ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
-project using [CircleCI](https://circleci.com/) or [Travis](https://travis-ci.org) against a GitHub repository.
+project using [CircleCI](https://circleci.com/), [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/) or [Travis](https://travis-ci.org) against a GitHub or GitLab repository.
 
 Simply run the installer (details below) and allow the CI provider that you chose to watch repository changes
 to start building on every pull request.
