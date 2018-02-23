@@ -1,0 +1,143 @@
+stages:
+  - build
+  - test
+#  - deploy
+
+# The shared template for Drupal8CI builds and tests.
+.drupal8ci_template: &drupal8ci_template
+  except:
+    - master
+  image: juampynr/drupal8ci:latest
+  services:
+    - mariadb:10.3
+    #- selenium/standalone-chrome-debug:3.7.1-beryllium
+  before_script:
+    - mkdir -p /var/www/html
+    - ln -s $CI_PROJECT_DIR/web /var/www/html/web
+    - apache2-foreground&
+  variables:
+    #CI_DEBUG_TRACE: 1
+    MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    DB_URL: "mysql://root@mariadb/drupal8"
+    SIMPLETEST_DB: "mysql://root@mariadb/drupal8"
+    SIMPLETEST_BASE_URL: "http://localhost"
+    BROWSERTEST_OUTPUT_DIRECTORY: "$CI_PROJECT_DIR/web/sites/simpletest"
+    BEHAT_PARAMS: >
+      {
+        "extensions" : {
+          "Bex\\Behat\\ScreenshotExtension" : {
+            "image_drivers" : {
+              "local" : { "screenshot_directory" : "$CI_PROJECT_DIR/artifacts/screenshots" }
+            }
+          }
+        }
+      }
+
+# The shared template for Drupal8CI tests.
+.drupal8ci_test_template: &drupal8ci_test_template
+  <<: *drupal8ci_template
+  stage: test
+  dependencies:
+    - drupal8ci:build
+
+## Build the testing environment.
+drupal8ci:build:
+  <<: *drupal8ci_template
+  stage: build
+  script:
+    - composer install
+    - robo install:dependencies
+  services:
+    - mariadb:10.3
+    - selenium/standalone-chrome-debug:3.7.1-beryllium
+  artifacts:
+    paths:
+      - vendor
+      - web
+  except:
+    - master
+
+## Job to run Unit and Kernel tests.
+drupal8ci:unit_kernel_tests:
+  <<: *drupal8ci_test_template
+  script:
+    - robo setup:drupal || true
+    - cp .gitlab-ci/phpunit.xml web/core/
+    - mkdir -p artifacts/phpunit
+    - chmod -R 777 artifacts
+    - cd web
+    - sudo -E -u www-data
+        ../vendor/bin/phpunit -c core
+        --debug --verbose --log-junit
+        ../artifacts/phpunit/phpunit.xml
+        modules/custom
+  artifacts:
+    paths:
+      - artifacts/phpunit
+
+## Job to run the update path and Behat tests.
+# This doesn't currently work because of the following GitLab issue:
+# https://gitlab.com/gitlab-org/gitlab-selenium-server/issues/1
+#drupal8ci:behat_tests:
+#  <<: *drupal8ci_test_template
+#  script:
+#    - robo setup:drupal || true
+#    - cd web
+#    # For a quick start, set the following environment variable to a URL that contains
+#    # a database dump. Alternativelly, give CircleCI access to your development environment
+#    # and use Drush site aliases to run `drush sql-sync`.
+#    - wget -O dump.sql $DB_DUMP_URL
+#    - ../vendor/bin/drush sql-cli < dump.sql
+#    - ../vendor/bin/drush updatedb -y -v
+#    - ../vendor/bin/drush config-import -y -v
+#    - cd $CI_PROJECT_DIR
+#    - curl http://localhost
+#    - cp .gitlab-ci/behat.yml tests/behat.yml
+#    - chown -R www-data:www-data web/sites/default/files
+#    - vendor/bin/behat --verbose -c tests/behat.yml
+#  artifacts:
+#    paths:
+#      - artifacts/behat
+#      - artifacts/screenshots
+
+## Job to check coding standards.
+drupal8ci:code_sniffer:
+  <<: *drupal8ci_test_template
+  script:
+    - vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer
+    - mkdir -p artifacts/phpcs
+    - vendor/bin/phpcs
+        --standard=Drupal
+        --report=junit
+        --report-junit=artifacts/phpcs/phpcs.xml
+        web/modules/custom
+    - vendor/bin/phpcs
+        --standard=DrupalPractice
+        --report=junit
+        --report-junit=artifacts/phpcs/phpcs.xml
+        web/modules/custom
+  artifacts:
+    paths:
+      - artifacts/phpcs/phpcs.xml
+
+## Job to check test coverage.
+drupal8ci:code_coverage:
+  <<: *drupal8ci_test_template
+  script:
+    - robo setup:drupal || true
+    - cp .gitlab-ci/phpunit.xml web/core/
+    - mkdir -p artifacts/coverage-xml
+    - mkdir -p artifacts/coverage-html
+    - chmod -R 777 artifacts
+    - cd web
+    - timeout 60m sudo -E -u www-data
+        ../vendor/bin/phpunit
+        --verbose --debug
+        -c core
+        --coverage-xml ../artifacts/coverage-xml
+        --coverage-html ../artifacts/coverage-html
+        --testsuite nonfunctional
+        modules/custom
+  artifacts:
+    paths:
+      - artifacts

@@ -12,20 +12,25 @@
  */
 class RoboFile extends \Robo\Tasks
 {
+    /**
+     * @var string $db_url
+     *   The database URL. This can be overridden by specifying a $DB_URL
+     *   environment variable.
+     */
+    protected $db_url = 'mysql://root@127.0.0.1/drupal8';
 
     /**
      * RoboFile constructor.
      */
     public function __construct()
     {
+        // Pull a DB_URL from the environment, if it exists.
+        if (filter_var(getenv('DB_URL'), FILTER_VALIDATE_URL)) {
+          $this->db_url = getenv('DB_URL');
+        }
         // Treat this command like bash -e and exit as soon as there's a failure.
         $this->stopOnFail();
     }
-
-    /**
-     * The database URL.
-     */
-    const DB_URL = 'mysql://root@127.0.0.1/drupal8';
 
     /**
      * Adds coding standard dependencies.
@@ -90,11 +95,10 @@ class RoboFile extends \Robo\Tasks
       $admin_password = null,
       $site_name = null
     ) {
-        $db_url = static::DB_URL;
         $task = $this->drush()
           ->args('site-install')
           ->option('yes')
-          ->option('db-url', $db_url, '=');
+          ->option('db-url', $this->db_url, '=');
 
         if ($admin_user) {
             $task->option('account-name', $admin_user, '=');
