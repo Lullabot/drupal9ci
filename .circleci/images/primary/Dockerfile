@@ -29,7 +29,7 @@ RUN mv composer.phar /usr/local/bin/composer
 RUN composer global require hirak/prestissimo
 
 # Install XDebug.
-RUN pecl install xdebug-2.5.5 \
+RUN pecl install xdebug-2.6.0 \
     && docker-php-ext-enable xdebug
 
 # Install Robo CI.
