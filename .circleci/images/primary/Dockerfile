@@ -1,4 +1,4 @@
-FROM drupal:8.4-apache
+FROM drupal:8.5-apache
 
 RUN apt-get update && apt-get install -y \
   git \
@@ -29,12 +29,11 @@ RUN mv composer.phar /usr/local/bin/composer
 RUN composer global require hirak/prestissimo
 
 # Install XDebug.
-RUN pecl install xdebug-2.5.5 \
+RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
 # Install Robo CI.
-# @TODO replace the following URL by http://robo.li/robo.phar when the Robo team fixes it.
-RUN wget https://github.com/consolidation/Robo/releases/download/1.1.5/robo.phar
+RUN wget https://robo.li/robo.phar
 RUN chmod +x robo.phar && mv robo.phar /usr/local/bin/robo
 
 # Install Dockerize.
