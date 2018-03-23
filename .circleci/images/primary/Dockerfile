@@ -33,7 +33,7 @@ RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
 # Install Robo CI.
-RUN wget http://robo.li/robo.phar
+RUN wget https://robo.li/robo.phar
 RUN chmod +x robo.phar && mv robo.phar /usr/local/bin/robo
 
 # Install Dockerize.
