@@ -17,12 +17,14 @@ drupal8ci_install() {
 
 	# Turn on xtracing and error detection so users know what's happening.
 	set -ex
-	# Download and extract CircleCI configuration and sample tests.
-	wget -O "$tmpdir/master.zip" https://github.com/juampynr/drupal8ci/archive/master.zip
-	unzip "$tmpdir/master.zip" 'drupal8ci-master/dist/*' -d "$tmpdir"
-	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/" .
+	# Download and extract GitLab CI configuration and sample tests.
+	wget -O "$tmpdir/master.zip" https://github.com/lullabot/drupal8ci/archive/master.zip
+	unzip "$tmpdir/master.zip" 'drupal8ci-master/dist/gitlabci/*' -d "$tmpdir"
+	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/gitlabci/" .
+    unzip "$tmpdir/master.zip" 'drupal8ci-master/dist/common/*' -d "$tmpdir"
+	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/common/" .
 
-	# Add development dependencies to run the CircleCI jobs.
+	# Add development dependencies to run the GitLab CI jobs.
 	#
 	# behat/mink-extension is pinned until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
 	composer require --dev \

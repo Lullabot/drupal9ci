@@ -21,6 +21,6 @@ jobs:
       - run:
           name: Run setup script
           command: |
-            cp setup.sh drupal
+            cp setup-circleci.sh drupal
             cd drupal
-            ./setup.sh
+            ./setup-circleci.sh

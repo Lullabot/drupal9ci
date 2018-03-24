@@ -3,43 +3,39 @@
 [![CircleCI](https://circleci.com/gh/Lullabot/drupal8ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal8ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
-project using [CircleCI](https://circleci.com/), [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/) or [Travis](https://travis-ci.org) against a GitHub or GitLab repository.
+project using [CircleCI](https://circleci.com/), [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/),
+or [Travis CI](https://travis-ci.org) against a GitHub or GitLab repository.
 
-Simply run the installer (details below) and allow the CI provider that you chose to watch repository changes
+To install, simply run the respective installer and allow the CI provider that you chose to watch repository changes
 to start building on every pull request.
 
-For a working example, checkout https://github.com/juampynr/d8cidemo.
+For a working example, checkout this [sample Drupal 8 project](https://github.com/juampynr/d8cidemo).
 
 If you want to test an individual module instead of a Drupal project, see Andrew Berry's
 [drupal_tests](https://github.com/deviantintegral/drupal_tests).
 
-Here is a clip that shows how it works for CircleCI: https://www.youtube.com/watch?v=wd_5mX0x4K8.
+Here is a clip that shows [how it works for CircleCI](https://www.youtube.com/watch?v=wd_5mX0x4K8).
 
 ## Requirements
 
-The scripts assume that the Drupal 8 project was created using [drupal-project](https://github.com/drupal-composer/drupal-project)
-which sets a well known foundation for Drupal 8 projects. If your project's directory
+The scripts assume that you have a Drupal 8 project created using [drupal-project](https://github.com/drupal-composer/drupal-project),
+which sets a well known foundation. If your project's directory
 structure differs from what _drupal-project_ sets up, you will need to
-adjust the CI jobs so they can run successfully.
+adjust the CI scripts.
 
 ## Installation
 
-1. Make sure that you don't have changes pending to commit in your local environment.
-2. Open a terminal and run the installer from the root of your project:
-```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup.sh | bash
-```
-3. The installer adds the following files to your repository:
-  - A custom demo module with [unit and kernel tests](web/modules/custom/demo_module/tests/src).
-  - Sample [Behat tests](tests).
-  - CircleCI and Travis CI implementations. At this point you should choose one. Currently
-    the CircleCI implementation has more features and is more tested than the Travis CI
-    implementation.
+Each CI tool has its own installer, which extracts the required files to run the jobs,
+plus a set of sample PHPUnit and Behat tests.
+
+Choose a CI tool from the list below and follow its installation steps.
 
 ### [CircleCI](https://circleci.com)
 
-If you chose this CI provider, you can delete the `.travis.yml` file and `.travis` directory.
-Then commit and push the set of changes.
+Open a terminal and run the installer from the root of your project:
+```bash
+curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-circleci.sh | bash
+```
 
 Sign up at [CircleCI](https://circleci.com/) and allow access to your project's repository.
 
@@ -55,12 +51,12 @@ For an overview of the CircleCI features, have a look at
 
 #### Using a custom Docker image
 
-The [CircleCI configuration file](dist/.circleci/config.yml) uses a
+The [CircleCI configuration file](dist/circleci/.circleci/config.yml) uses a
 [custom Docker image](https://hub.docker.com/r/juampynr/drupal8ci/) that extends from
 the [official Drupal image](https://hub.docker.com/_/drupal/) and it is [hosted at
 Docker Hub](https://hub.docker.com/r/juampynr/drupal8ci/). If this image
 does not fit your project's architecture, then have a look at its
-[Dockerfile](https://github.com/Lullabot/drupal8ci/blob/master/.circleci/images/primary/Dockerfile)
+[Dockerfile](https://github.com/Lullabot/drupal8ci/blob/master/circleci/.circleci/images/primary/Dockerfile)
 and consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
 based out of it.
    
@@ -69,48 +65,71 @@ based out of it.
 The Behat job requires a running Drupal 8 site. The repository contains the code, but for running
 tests in a realistic environment you need:
 
-* A recent copy of the production or development environment. If you have Drush site aliases, then
-  at the CircleCI dashboard go to the project's permissions and add an SSH key
-  so you can then adjust the job to run `drush @my.alias sql-cli`.
-  Alternatively upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
-  dump somewhere. For example [the demo project uses a Dropbox URL](https://github.com/juampynr/d8cidemo/blob/master/.circleci/config.yml#L70)
-  via an environment variable.
-* The development or production environment's files directory. Again, if you have site aliases, then
-  run `drush rsync @my.alias @self`. Alternatively, use the [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy)
-  module.
+##### 1. A recent copy of the production environment's database
 
-#### Running CircleCI jobs locally
+If you have Drush site aliases, then at the CircleCI dashboard go to the project's permissions
+and add an SSH key. Next, add `drush @my.alias sql-cli` to the Behat job at `.circleci/config.yml`.
 
-You can run the same jobs locally although there may be a few gotchas. Here is how to get started:
+Alternatively, upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
+dump somewhere. For example [the demo project uses a Dropbox URL](https://github.com/juampynr/d8cidemo/blob/master/.circleci/config.yml#L70)
+via an environment variable which is set at the Circle CI web interface like in the following
+screenshot:
 
-1. Install [CircleCI CLI](https://circleci.com/docs/2.0/local-jobs/#installing-the-cli-locally).
-2. Rename `web/sites/default/settings.php` to something else. In theory this file
-   should be skipped by CircleCI when it builds the image thanks to `.dockerignore` but
-   this is currently not working.
-3. The `.circleci/config.yml` defines a workflow with four jobs. You can't run the workflow but you
-   can run the jobs by adding them as options to the command like in the following example:
+![CircleCI database via environment variable](docs/images/circleci-db-env.png)
 
-```
-circleci build --job run-unit-kernel-tests
-```
+##### 2. The production environment's files directory
+
+If you have a site alias, then add `drush rsync @my.alias @self` to the Behat job. Alternatively,
+use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 ### [Travis CI](https://travis-ci.org)
 
-If you chose this CI provider, you can delete the `.circleci` directory.
-Then commit and push the set of changes.
+Open a terminal and run the installer from the root of your project:
+```bash
+curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-travisci.sh | bash
+```
 
-The Travis CI implementation currently runs unit and kernel tests, and checks Drupal's coding standards.
-If you are well versed in Travis CI, please give us a hand and [contribute](dist/.travis.yml) so we can
-reach feature parity with the CircleCI implementation.
-
-#### Installation
-
-1. Sign up at [Travis CI](https://travis-ci.com/) and allow access to your project's repository:
+Sign up at [Travis CI](https://travis-ci.com/) and allow access to your project's repository:
 
 ![Travis watch](docs/images/travis-watch.png)
 
-2. Happy CI-ing! :-D. From now on every pull request will trigger a build in Travis and its
+Happy CI-ing! :-D. From now on every pull request will trigger a build in Travis and its
 progress will be visible like in the following screenshot:
 
 ![Travis pull request](docs/images/travis-pr.png)
 
+For you to see the result of the individual jobs, you need to click at the Details link
+from the above screenshot:
+
+![Travis CI jobs](docs/images/tracis-jobs.png)
+
+#### Setting up the Behat job
+
+The Behat job requires, in order to test the behavior of your project:
+
+##### A recent copy of the production environment's database
+
+If you have Drush site aliases, and your repository is private, then follow these
+instructions to [add an SSH key](https://docs.travis-ci.com/user/private-dependencies/#User-Key).
+Next, set up a drush site alias. Finally, adjust the Behat job to run `drush @my.alias sql-cli`.
+
+Alternatively, upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
+dump somewhere and set up the environment variable so the job can download it. For example
+[the demo project uses a Dropbox URL](https://github.com/juampynr/d8cidemo/blob/master/.circleci/config.yml#L70)
+via an environment variable referenced below:
+
+![Travis CI db env var](docs/images/travisci-db-var.png)
+
+##### 2. The production environment's files directory
+
+If you have a site alias, then add `drush rsync @my.alias @self` to the Behat job. Alternatively,
+use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
+
+### [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/)
+
+Open a terminal and run the installer from the root of your project:
+```bash
+curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-gitlabci.sh | bash
+```
+
+Follow the installation steps at the [GitLab CI website](https://about.gitlab.com/installation/) for completing the setup.
