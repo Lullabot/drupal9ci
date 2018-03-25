@@ -21,6 +21,12 @@ which sets a well known foundation. If your project's directory
 structure differs from what _drupal-project_ sets up, you will need to
 adjust the CI scripts.
 
+It's also recommended to adjust your project to add a subset of the `settings.php` file into
+version control and rely on `settings.local.php` for setting the database connection. See [this
+commit](https://github.com/juampynr/drupal8-circleci/commit/817d0b6674c42dba73165b047b6b89d72ee72d11)
+which contains these changes among other ones. The CI scripts have their own `settings.local.php`
+which is copied on build time into `web/sites/default`.
+
 ## Installation
 
 Each CI tool has its own installer, which extracts the required files to run the jobs,
