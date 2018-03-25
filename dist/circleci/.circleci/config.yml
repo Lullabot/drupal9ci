@@ -75,13 +75,14 @@ behat_tests: &behat_tests
         name: Install database and run the update path
         command: |
           robo install:dependencies
-          robo setup:drupal || true
-          cd web
+          cp .circleci/config/settings.local.php web/sites/default/
+          mysql -u root -h 127.0.0.1 -e "create database drupal8"
           # For a quick start, set the following environment variable to a URL that contains
-          # a database dump. Alternativelly, give CircleCI access to your development environment
-          # and use Drush site aliases to run `drush sql-sync`.
+          # a database dump of the project. Alternativelly, give CircleCI access to your
+          # development environment and use Drush site aliases to run `drush sql-sync`.
           wget -O dump.sql $DB_DUMP_URL
-          ../vendor/bin/drush sql-cli < dump.sql
+          cd web
+          ../vendor/bin/drush sql-cli < ../dump.sql
           ../vendor/bin/drush updatedb -y -v
           ../vendor/bin/drush config-import -y -v
           cd ..
