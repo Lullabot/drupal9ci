@@ -9,8 +9,6 @@ or [Travis CI](https://travis-ci.org) against a GitHub or GitLab repository.
 To install, simply run the respective installer and allow the CI provider that you chose to watch repository changes
 to start building on every pull request.
 
-For a working example, checkout this [sample Drupal 8 project](https://github.com/juampynr/d8cidemo).
-
 If you want to test an individual module instead of a Drupal project, see Andrew Berry's
 [drupal_tests](https://github.com/deviantintegral/drupal_tests).
 
@@ -31,6 +29,8 @@ plus a set of sample PHPUnit and Behat tests.
 Choose a CI tool from the list below and follow its installation steps.
 
 ### [CircleCI](https://circleci.com)
+
+[Live demo](https://github.com/juampynr/drupal8-circleci)
 
 Open a terminal and run the installer from the root of your project:
 ```bash
@@ -71,7 +71,7 @@ If you have Drush site aliases, then at the CircleCI dashboard go to the project
 and add an SSH key. Next, add `drush @my.alias sql-cli` to the Behat job at `.circleci/config.yml`.
 
 Alternatively, upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
-dump somewhere. For example [the demo project uses a Dropbox URL](https://github.com/juampynr/d8cidemo/blob/master/.circleci/config.yml#L70)
+dump somewhere. For example [the demo project uses a Dropbox URL](https://github.com/juampynr/drupal8-circleci/blob/master/.circleci/config.yml#L83)
 via an environment variable which is set at the Circle CI web interface like in the following
 screenshot:
 
