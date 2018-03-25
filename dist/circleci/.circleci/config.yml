@@ -1,6 +1,13 @@
-# Runs a set of CI jobs for Drupal 8 projects.
+# CircleCI integration with Drupal 8.
 
 # Reusable steps.
+
+## Copies .circle/Robofile to the repository root.
+copy_robo: &copy_robo
+  run:
+    name: Copy RoboFile.php
+    command: cp .circleci/RoboFile.php .
+
 ## Defines images and working directory.
 defaults: &defaults
   docker:
@@ -29,11 +36,13 @@ save_cache: &save_cache
   key: v1-dependencies-{{ checksum "composer.json" }}
 
 #Jobs
+
 ## Job to run Unit and Kernel tests.
 unit_kernel_tests: &unit_kernel_tests
   <<: *defaults
   steps:
     - checkout
+    - *copy_robo
     - restore_cache: *restore_cache
     - run:
         name: Set up and run Unit and Kernel tests
@@ -57,6 +66,7 @@ behat_tests: &behat_tests
   <<: *defaults
   steps:
     - checkout
+    - *copy_robo
     - restore_cache: *restore_cache
     - run:
         name: Wait for the database service to be ready
@@ -93,6 +103,7 @@ code_sniffer: &code_sniffer
   <<: *defaults
   steps:
     - checkout
+    - *copy_robo
     - restore_cache: *restore_cache
     - run:
         name: Set up and inspect coding standards
@@ -113,6 +124,7 @@ code_coverage: &code_coverage
   <<: *defaults
   steps:
     - checkout
+    - *copy_robo
     - restore_cache: *restore_cache
     - run:
         name: Set up and inspect code coverage
