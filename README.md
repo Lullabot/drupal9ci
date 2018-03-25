@@ -84,6 +84,8 @@ use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 ### [Travis CI](https://travis-ci.org)
 
+[Live Demo](https://github.com/juampynr/drupal8-travis-ci)
+
 Open a terminal and run the installer from the root of your project:
 ```bash
 curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-travis-ci.sh | bash
@@ -101,7 +103,27 @@ progress will be visible like in the following screenshot:
 For you to see the result of the individual jobs, you need to click at the Details link
 from the above screenshot:
 
-![Travis CI jobs](docs/images/tracis-jobs.png)
+![Travis CI jobs](docs/images/travis-jobs.png)
+
+#### Setting up code coverage reports
+
+[Coveralls.io](https://coveralls.io/) is a third party tool that can host and present
+PHPUnit code coverage reports in a neat way within a pull request. Here is how to set it up:
+
+Register at https://coveralls.io using your GitHub account and then add your repository
+like in the following screenshot:
+
+![Coveralls add repository](docs/images/coveralls-add-repo.png)
+
+Then take the chance to adjust a couple settings to get cleaner feedback in pull
+requests:
+
+![Coveralls settings](docs/images/coveralls-settings.png)
+
+That's it! Here is a sample report which you can see by clicking at Details
+at the pull request's status message:
+
+![Coveralls report](docs/images/coveralls-report.png)
 
 #### Setting up the Behat job
 
@@ -115,7 +137,7 @@ Next, set up a drush site alias. Finally, adjust the Behat job to run `drush @my
 
 Alternatively, upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
 dump somewhere and set up the environment variable so the job can download it. For example
-[the demo project uses a Dropbox URL](https://github.com/juampynr/d8cidemo/blob/master/.circleci/config.yml#L70)
+[the demo project uses a Dropbox URL](https://github.com/juampynr/drupal8-travis-ci/blob/master/.travis/RoboFile.php#L89)
 via an environment variable referenced below:
 
 ![Travis CI db env var](docs/images/travisci-db-var.png)
