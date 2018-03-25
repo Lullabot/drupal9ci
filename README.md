@@ -142,4 +142,6 @@ Follow the installation steps at the [GitLab CI website](https://about.gitlab.co
 If you get this error at the unit and kernel tests jobs, then it means that your
 project uses Drupal 8.5 or newer, which introduced a few changes at `web/core/phpunit.xml.dist`.
 
-To fix this, overwrite `.circleci/config/phpunit.xml` with `.circleci/config/phpunit-drupal-8.5.xml`.
+To fix this, overwrite `.circleci/config/phpunit.xml` with `.circleci/config/phpunit-drupal-8.5.xml`
+if you are using CircleCI, or with `.travis/config/phpunit-drupal-8.5.xml` if you are using
+Travis CI.
