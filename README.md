@@ -129,7 +129,7 @@ at the pull request's status message:
 
 The Behat job requires, in order to test the behavior of your project:
 
-##### A recent copy of the production environment's database
+##### 1. A recent copy of the production environment's database
 
 If you have Drush site aliases, and your repository is private, then follow these
 instructions to [add an SSH key](https://docs.travis-ci.com/user/private-dependencies/#User-Key).
