@@ -133,3 +133,13 @@ curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-gitlabci.sh | bas
 ```
 
 Follow the installation steps at the [GitLab CI website](https://about.gitlab.com/installation/) for completing the setup.
+
+
+## Troubleshooting
+
+### Class "\Drupal\Tests\Listeners\DrupalStandardsListener" does not exist
+
+If you get this error at the unit and kernel tests jobs, then it means that your
+project uses Drupal 8.5 or newer, which introduced a few changes at `web/core/phpunit.xml.dist`.
+
+To fix this, overwrite `.circleci/config/phpunit.xml` with `.circleci/config/phpunit-drupal-8.5.xml`.
