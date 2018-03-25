@@ -86,7 +86,7 @@ use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-travisci.sh | bash
+curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-travis-ci.sh | bash
 ```
 
 Sign up at [Travis CI](https://travis-ci.com/) and allow access to your project's repository:
@@ -129,7 +129,7 @@ use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-gitlabci.sh | bash
+curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-gitlab-ci.sh | bash
 ```
 
 Follow the installation steps at the [GitLab CI website](https://about.gitlab.com/installation/) for completing the setup.
