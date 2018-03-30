@@ -2,6 +2,10 @@ language: php
 dist: trusty
 sudo: required
 
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
 services:
   - docker
 
