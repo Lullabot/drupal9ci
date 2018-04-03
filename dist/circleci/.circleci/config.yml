@@ -45,16 +45,8 @@ unit_kernel_tests: &unit_kernel_tests
     - *copy_robo
     - restore_cache: *restore_cache
     - run:
-        name: Set up and run Unit and Kernel tests
-        command: |
-          apache2-foreground&
-          robo install:dependencies
-          robo setup:drupal || true
-          cp .circleci/config/phpunit.xml web/core/
-          mkdir -p artifacts/phpunit
-          chmod -R 777 artifacts
-          cd web
-          sudo -E -u www-data ../vendor/bin/phpunit -c core --debug --verbose --log-junit ../artifacts/phpunit/phpunit.xml modules/custom
+        name: Run PHPUnit tests
+        command: robo job:run-unit-tests
     - store_test_results:
         path: /var/www/html/artifacts/phpunit
     - store_artifacts:
@@ -69,31 +61,9 @@ behat_tests: &behat_tests
     - *copy_robo
     - restore_cache: *restore_cache
     - run:
-        name: Wait for the database service to be ready
-        command: dockerize -wait tcp://localhost:3306 -timeout 1m
-    - run:
-        name: Install database and run the update path
-        command: |
-          robo install:dependencies
-          cp .circleci/config/settings.local.php web/sites/default/
-          mysql -u root -h 127.0.0.1 -e "create database drupal8"
-          # For a quick start, set the following environment variable to a URL that contains
-          # a database dump of the project. Alternativelly, give CircleCI access to your
-          # development environment and use Drush site aliases to run `drush sql-sync`.
-          wget -O dump.sql $DB_DUMP_URL
-          cd web
-          ../vendor/bin/drush sql-cli < ../dump.sql
-          ../vendor/bin/drush updatedb -y -v
-          ../vendor/bin/drush config-import -y -v
-          cd ..
+        name: Run Behat tests
+        command: robo job:run-behat-tests
     - save_cache: *save_cache
-    - run:
-        name: Set up and run Behat tests
-        command: |
-          apache2-foreground&
-          cp .circleci/config/behat.yml tests/
-          chown -R www-data:www-data /var/www/html/web/sites/default/files
-          vendor/bin/behat --verbose -c tests/behat.yml
     - store_test_results:
         path: /var/www/html/artifacts/behat
     - store_artifacts:
@@ -107,13 +77,8 @@ code_sniffer: &code_sniffer
     - *copy_robo
     - restore_cache: *restore_cache
     - run:
-        name: Set up and inspect coding standards
-        command: |
-          robo install:dependencies
-          vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer
-          mkdir -p artifacts/phpcs
-          vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
-          vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
+        name: Inspect coding standards
+        command: robo job:check-coding-standards
     - store_test_results:
         path: /var/www/html/artifacts/phpcs
     - store_artifacts:
@@ -128,22 +93,8 @@ code_coverage: &code_coverage
     - *copy_robo
     - restore_cache: *restore_cache
     - run:
-        name: Set up and inspect code coverage
-        environment:
-          SIMPLETEST_BASE_URL: "http://localhost"
-          SIMPLETEST_DB: "sqlite://localhost//tmp/drupal.sqlite"
-          BROWSERTEST_OUTPUT_DIRECTORY: "/var/www/html/sites/simpletest"
-        command: |
-          robo install:dependencies
-          robo setup:drupal || true
-          cp .circleci/config/phpunit.xml web/core/
-          mkdir -p artifacts/coverage-xml
-          mkdir -p artifacts/coverage-html
-          chmod -R 777 artifacts
-          cd web
-          timeout 60m sudo -E -u www-data ../vendor/bin/phpunit --verbose --debug -c core --coverage-xml ../artifacts/coverage-xml --coverage-html ../artifacts/coverage-html --testsuite nonfunctional modules/custom
-          cd ../
-          tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
+        name: Generate code coverage report
+        command: robo job:generate-coverage-report
     - store_artifacts:
         path: /var/www/html/artifacts
     - save_cache: *save_cache
