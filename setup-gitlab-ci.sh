@@ -32,7 +32,7 @@ drupal8ci_install() {
 		behat/mink-selenium2-driver:^1.3 \
 		bex/behat-screenshot \
 		drupal/coder:^8.2 \
-		drupal/drupal-extension:master-dev
+		drupal/drupal-extension:^4.0
 }
 
 #######################################
