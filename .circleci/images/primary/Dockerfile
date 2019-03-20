@@ -25,7 +25,7 @@ RUN sed -ri -e 's!/var/www/html!/var/www/html/web!g' /etc/apache2/sites-availabl
 RUN sed -ri -e 's!/var/www!/var/www/html/web!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # Install composer.
-RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/fe44bd5b10b89fbe7e7fc70e99e5d1a344a683dd/web/installer -O - -q | php -- --quiet
+RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet
 RUN mv composer.phar /usr/local/bin/composer
 
 # Put a turbo on composer.
