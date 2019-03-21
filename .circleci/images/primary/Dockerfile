@@ -28,6 +28,7 @@ RUN sed -ri -e 's!/var/www!/var/www/html/web!g' /etc/apache2/apache2.conf /etc/a
 COPY composer-installer.sh /tmp/composer-installer.sh
 RUN chmod +x /tmp/composer-installer.sh
 RUN /tmp/composer-installer.sh
+RUN mv composer.phar /usr/local/bin/composer
 
 # Put a turbo on composer.
 RUN composer global require hirak/prestissimo
