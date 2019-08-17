@@ -25,7 +25,7 @@ RUN sed -ri -e 's!/var/www/html!/var/www/html/web!g' /etc/apache2/sites-availabl
 RUN sed -ri -e 's!/var/www!/var/www/html/web!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # Install composer.
-COPY composer-installer.sh /tmp/composer-installer.sh
+COPY scripts/composer-installer.sh /tmp/composer-installer.sh
 RUN chmod +x /tmp/composer-installer.sh
 RUN /tmp/composer-installer.sh
 RUN mv composer.phar /usr/local/bin/composer
@@ -50,3 +50,10 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 # Install ImageMagic to take screenshots.
 RUN pecl install imagick \
     && docker-php-ext-enable imagick
+
+# Install Chrome browser.
+RUN apt-get install --yes gnupg2 apt-transport-https
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+RUN sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+RUN apt-get update
+RUN apt-get install --yes google-chrome-unstable
