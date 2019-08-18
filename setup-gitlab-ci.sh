@@ -25,14 +25,11 @@ drupal8ci_install() {
 	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/common/" .
 
 	# Add development dependencies to run the GitLab CI jobs.
-	#
-	# behat/mink-extension is pinned until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
 	composer require --dev \
-		behat/mink-extension:v2.2 \
-		behat/mink-selenium2-driver:^1.3 \
-		bex/behat-screenshot \
+		dmore/chrome-mink-driver:^2.7 \
+		weitzman/drupal-test-traits:^1.2 \
 		drupal/coder:^8.2 \
-		drupal/drupal-extension:^4.0
+		consolidation/robo:^1.4
 }
 
 #######################################
