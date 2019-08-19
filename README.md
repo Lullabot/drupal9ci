@@ -36,7 +36,7 @@ Choose a CI tool from the list below and follow its installation steps.
 
 ### [CircleCI](https://circleci.com)
 
-[Live demo](https://github.com/juampynr/drupal8-circleci) | [Deep dive article](https://www.lullabot.com/articles/continuous-integration-drupal-8-circleci)
+[Demo repository](https://github.com/juampynr/drupal8-circleci) | [Deep dive article](https://www.lullabot.com/articles/continuous-integration-drupal-8-circleci)
 
 Open a terminal and run the installer from the root of your project:
 ```bash
@@ -90,7 +90,7 @@ use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 ### [Travis CI](https://travis-ci.org)
 
-[Live Demo](https://github.com/juampynr/drupal8-travis-ci) | [Deep dive article](https://www.lullabot.com/articles/continuous-integration-in-drupal-8-with-travis-ci)
+[Demo repository](https://github.com/juampynr/drupal8-travis-ci) | [Deep dive article](https://www.lullabot.com/articles/continuous-integration-in-drupal-8-with-travis-ci)
 
 Open a terminal and run the installer from the root of your project:
 ```bash
@@ -154,6 +154,8 @@ If you have a site alias, then add `drush rsync @my.alias @self` to the Behat jo
 use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 ### [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/)
+
+[Demo repository](https://gitlab.com/juampynr/drupal8-gitlab)
 
 Open a terminal and run the installer from the root of your project:
 ```bash
