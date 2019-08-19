@@ -162,7 +162,6 @@ curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-gitlab-ci.sh | ba
 
 Follow the installation steps at the [GitLab CI website](https://about.gitlab.com/installation/) for completing the setup.
 
-
 ## Troubleshooting
 
 ### Class "\Drupal\Tests\Listeners\DrupalStandardsListener" does not exist

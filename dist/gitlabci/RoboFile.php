@@ -11,6 +11,19 @@
 class RoboFile extends \Robo\Tasks {
 
   /**
+   * Command to build the environment
+   *
+   * @return \Robo\Result
+   *   The result of the collection of tasks.
+   */
+  public function jobBuild() {
+    $collection = $this->collectionBuilder();
+    $collection->addTaskList($this->copyConfigurationFiles());
+    $collection->addTaskList($this->runComposer());
+    return $collection->run();
+  }
+
+  /**
    * Command to run unit tests.
    *
    * @return \Robo\Result
@@ -149,6 +162,39 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function drush() {
     return $this->taskExec('vendor/bin/drush');
+  }
+
+  /**
+   * Copies configuration files.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function copyConfigurationFiles() {
+    $force = TRUE;
+    $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.gitlab-ci/settings.local.php',
+        'web/sites/default/settings.local.php', $force)
+      ->copy('.gitlab-ci/.env',
+        '.env', $force);
+    return $tasks;
+  }
+
+  /**
+   * Runs composer commands.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function runComposer() {
+    $tasks = [];
+    $tasks[] = $this->taskComposerValidate()->noCheckPublish();
+    $tasks[] = $this->taskComposerInstall()
+      ->noInteraction()
+      ->envVars(['COMPOSER_ALLOW_SUPERUSER' => 1, 'COMPOSER_DISCARD_CHANGES' => 1] + getenv())
+      ->optimizeAutoloader();
+    return $tasks;
   }
 
 }

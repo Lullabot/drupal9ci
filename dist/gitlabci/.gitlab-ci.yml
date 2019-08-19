@@ -2,14 +2,11 @@ stages:
   - build
   - test
 
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - vendor/
-
 # The shared template for Drupal8CI builds and tests.
 .drupal8ci_template: &drupal8ci_template
   image: juampynr/drupal8ci:latest
+  services:
+    - registry.gitlab.com/juampynr/drupal8-gitlab:latest
 
 # The shared template for Drupal8CI tests.
 .drupal8ci_test_template: &drupal8ci_test_template
@@ -19,17 +16,22 @@ cache:
     - registry.gitlab.com/juampynr/drupal8-gitlab:latest
   dependencies:
     - drupal8ci:build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - vendor/
+    policy: pull
 
 ## Job to build the environment.
 drupal8ci:build:
   <<: *drupal8ci_template
   stage: build
   script:
-    - cp .gitlab-ci/settings.local.php web/sites/default/settings.local.php
-    - cp .gitlab-ci/.env .env
-    - composer install
-  services:
-    - registry.gitlab.com/juampynr/drupal8-gitlab:latest
+    - vendor/bin/robo job:build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - vendor/
   artifacts:
     untracked: true
     paths:
