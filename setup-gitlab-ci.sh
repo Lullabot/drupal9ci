@@ -29,7 +29,8 @@ drupal8ci_install() {
 		dmore/chrome-mink-driver:^2.7 \
 		weitzman/drupal-test-traits:^1.2 \
 		drupal/coder:^8.2 \
-		consolidation/robo:^1.4
+		consolidation/robo:^1.4 \
+		drush/drush
 }
 
 #######################################
