@@ -160,7 +160,11 @@ Open a terminal and run the installer from the root of your project:
 curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-gitlab-ci.sh | bash
 ```
 
-Follow the installation steps at the [GitLab CI website](https://about.gitlab.com/installation/) for completing the setup.
+Review, commit, and push the resulting changes. After doing that, navigate to the project's homepage
+at GitLab and open the CI / CD >> Pipelines section. You should see a running pipeline like
+the following one:
+
+![GitLab pipeline](docs/images/gitlab-pipeline.png)
 
 ## Troubleshooting
 
