@@ -168,6 +168,11 @@ the following one:
 
 ![GitLab pipeline](docs/images/gitlab-pipeline.png)
 
+#### Database setup
+In order to build a Docker image with your project's database. Run the one-line installer mentioned
+above and then follow the instructions at the resulting [scripts/database](dist/gitlabci/scripts/database)
+directory in your local environment.
+
 ## Troubleshooting
 
 ### Class "\Drupal\Tests\Listeners\DrupalStandardsListener" does not exist
