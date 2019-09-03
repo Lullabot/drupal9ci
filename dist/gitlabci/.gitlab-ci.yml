@@ -2,36 +2,40 @@ stages:
   - build
   - test
 
-# The shared template for Drupal8CI builds and tests.
-.drupal8ci_template: &drupal8ci_template
-  image: juampynr/drupal8ci:latest
-  services:
-    - registry.gitlab.com/juampynr/drupal8-gitlab:latest
+# The cache strategy for the build job.
+.cache_strategy_push:
+  cache:
+    paths:
+      - vendor
+      - web/core
+      - web/libraries
+      - web/modules/contrib
+      - web/profiles/contrib
+      - web/themes/contrib
+      - drush/Commands
 
-# The shared template for Drupal8CI tests.
-.drupal8ci_test_template: &drupal8ci_test_template
-  <<: *drupal8ci_template
+# The cache strategy for the test jobs.
+.cache_strategy_pull:
+  extends: .cache_strategy_push
+  cache:
+    policy: pull
+
+# The template for Drupal8CI tests.
+.drupal8ci_test_template:
+  extends: .cache_strategy_pull
+  image: juampynr/drupal8ci:latest
   stage: test
   services:
     - registry.gitlab.com/juampynr/drupal8-gitlab:latest
   dependencies:
     - drupal8ci:build
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - vendor/
-    policy: pull
 
 ## Job to build the environment.
 drupal8ci:build:
-  <<: *drupal8ci_template
+  extends: .cache_strategy_push
+  image: juampynr/drupal8ci:latest
   stage: build
-  script:
-    - vendor/bin/robo job:build
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - vendor/
+  script: robo job:build
   artifacts:
     untracked: true
     paths:
@@ -39,18 +43,17 @@ drupal8ci:build:
 
 ## Job to check coding standards.
 drupal8ci:code_sniffer:
-  <<: *drupal8ci_template
-  script:
-    - vendor/bin/robo job:coding-standards
+  extends: .cache_strategy_pull
+  image: juampynr/drupal8ci:latest
+  script: vendor/bin/robo job:coding-standards
   artifacts:
     paths:
       - artifacts/phpcs/phpcs.xml
 
 ## Job to run Unit and Kernel tests.
 drupal8ci:unit_kernel_tests:
-  <<: *drupal8ci_test_template
-  script:
-    - vendor/bin/robo job:unit-tests
+  extends: .drupal8ci_test_template
+  script: vendor/bin/robo job:unit-tests
   artifacts:
     paths:
       - junit.xml
@@ -59,9 +62,8 @@ drupal8ci:unit_kernel_tests:
 
 ## Job to check test coverage.
 drupal8ci:code_coverage:
-  <<: *drupal8ci_test_template
-  script:
-    - vendor/bin/robo job:coverage-report
+  extends: .drupal8ci_test_template
+  script: vendor/bin/robo job:coverage-report
   artifacts:
     paths:
       - artifacts
@@ -69,8 +71,7 @@ drupal8ci:code_coverage:
 
 # Job to run existing site tests
 drupal8ci:existing_site_tests:
-  <<: *drupal8ci_test_template
+  extends: .drupal8ci_test_template
   script:
-    - google-chrome-unstable --disable-gpu --headless --no-sandbox --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 &
+    - vendor/bin/robo run:chrome-headless &
     - vendor/bin/robo job:existing-site-tests
-

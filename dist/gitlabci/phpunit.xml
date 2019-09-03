@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="web/core/tests/bootstrap.php">
+  <php>
+    <ini name="memory_limit" value="-1"/>
+    <env name="SIMPLETEST_BASE_URL" value=""/>
+    <env name="SIMPLETEST_DB" value=""/>
+    <env name="DTT_BASE_URL" value=""/>
+    <env name="DTT_API_URL" value=""/>
+    <env name="DTT_MINK_DRIVER_ARGS" value=""/>
+    <env name="BROWSERTEST_OUTPUT_DIRECTORY" value=""/>
+    <!-- To disable deprecation testing completely uncomment the next line. -->
+    <!--<env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>-->
+    <env name="DTT_SCREENSHOT_REPORT_DIRECTORY" value=""/>
+  </php>
+
+  <testsuites>
+    <testsuite name="unit">
+      <directory>./web/modules/custom/*/tests/src/Unit</directory>
+      <!--<directory>./web/profiles/custom/*/tests/src/Unit</directory>-->
+    </testsuite>
+    <testsuite name="kernel">
+      <directory>./web/modules/custom/*/tests/src/Kernel</directory>
+      <!--<directory>./web/profiles/custom/*/tests/src/Kernel</directory>-->
+    </testsuite>
+    <testsuite name="existing-site">
+      <!-- Assumes tests are namespaced as \Drupal\Tests\custom_foo\ExistingSite. -->
+      <directory>./web/modules/custom/*/tests/src/ExistingSite</directory>
+      <!--<directory>./web/profiles/custom/*/tests/src/ExistingSite</directory>-->
+    </testsuite>
+    <testsuite name="existing-site-javascript">
+      <!-- Assumes tests are namespaced as \Drupal\Tests\custom_foo\ExistingSiteJavascript. -->
+      <directory>./web/modules/custom/*/tests/src/ExistingSiteJavascript</directory>
+      <!--<directory>./web/profiles/custom/*/tests/src/ExistingSiteJavascript</directory>-->
+    </testsuite>
+  </testsuites>
+
+  <!-- Filter for coverage reports. -->
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory>./web/modules/custom</directory>
+      <exclude>
+        <directory>./web/modules/custom/*/tests</directory>
+      </exclude>
+    </whitelist>
+  </filter>
+</phpunit>
