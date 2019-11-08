@@ -155,7 +155,7 @@ use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 ### [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/)
 
-[Demo repository](https://gitlab.com/juampynr/drupal8-gitlab)
+[Demo repository](https://gitlab.com/juampynr/drupal8-gitlab) | [Deep dive article](https://www.lullabot.com/articles/installer-drupal-8-and-gitlab-ci)
 
 Open a terminal and run the installer from the root of your project:
 ```bash
