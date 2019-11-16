@@ -37,6 +37,10 @@ RUN composer global require hirak/prestissimo
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
 
+# Install bcmath.
+RUN pecl install bcmath \
+    && docker-php-ext-install bcmath
+
 # Install Robo CI.
 RUN wget https://robo.li/robo.phar
 RUN chmod +x robo.phar && mv robo.phar /usr/local/bin/robo
