@@ -10,9 +10,11 @@ RUN apt-get update && apt-get install -y \
   unzip \
   vim \
   wget \
+  && docker-php-ext-install bcmath \
   && docker-php-ext-install mysqli \
   && docker-php-ext-install pdo \
-  && docker-php-ext-install pdo_mysql
+  && docker-php-ext-install pdo_mysql \
+  && docker-php-ext-install xdebug
 
 # Remove the memory limit for the CLI only.
 RUN echo 'memory_limit = -1' > /usr/local/etc/php/php-cli.ini
@@ -32,14 +34,6 @@ RUN mv composer.phar /usr/local/bin/composer
 
 # Put a turbo on composer.
 RUN composer global require hirak/prestissimo
-
-# Install XDebug.
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
-
-# Install bcmath.
-RUN pecl install bcmath \
-    && docker-php-ext-install bcmath
 
 # Install Robo CI.
 RUN wget https://robo.li/robo.phar
