@@ -1,0 +1,97 @@
+on: [push, pull_request]
+name: Tests and code
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    container:
+      image: juampynr/drupal8ci:latest
+
+    services:
+      mariadb:
+        image: quay.io/juampynr/drupal8-github-actions:latest
+        ports:
+          - 33306:3306
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Build project
+        run: |
+          robo job:build
+
+      - name: Run PHPUnit tests
+        run: vendor/bin/robo job:unit-tests
+
+  code-standards:
+    runs-on: ubuntu-latest
+    container:
+      image: juampynr/drupal8ci:latest
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Build project
+        run: |
+          robo job:build
+
+      - name: Check coding standards
+        run: vendor/bin/robo job:coding-standards
+
+  code-coverage:
+    runs-on: ubuntu-latest
+    container:
+      image: juampynr/drupal8ci:latest
+
+    services:
+      mariadb:
+        image: quay.io/juampynr/drupal8-github-actions:latest
+        ports:
+          - 33306:3306
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Build project
+        run: |
+          robo job:build
+
+      - name: Assess code coverage
+        run: |
+          vendor/bin/robo job:coverage-report
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v1
+        with:
+          name: coverage
+          path: coverage
+
+  existing-site-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: juampynr/drupal8ci:latest
+
+    services:
+      mariadb:
+        image: quay.io/juampynr/drupal8-github-actions:latest
+        ports:
+          - 33306:3306
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Build project
+        run: |
+          robo job:build
+
+      - name: Run existing site tests
+        run: |
+          vendor/bin/robo run:chrome-headless &
+          vendor/bin/robo job:existing-site-tests

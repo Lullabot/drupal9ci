@@ -3,8 +3,12 @@
 [![CircleCI](https://circleci.com/gh/Lullabot/drupal8ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal8ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
-project using [CircleCI](https://circleci.com/), [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/),
-or [Travis CI](https://travis-ci.org) against a GitHub or GitLab repository.
+project using any of the following CI providers:
+
+ * [CircleCI](#circleci)
+ * [Travis CI](#travis-ci)
+ * [GitLab CI](#gitlab-ci)
+ * [GitHub Actions](#github-actions)
 
 To install, simply run the respective installer and allow the CI provider that you chose to watch repository changes
 to start building on every pull request.
@@ -25,12 +29,12 @@ It's also recommended to adjust your project to add a subset of the `settings.ph
 version control and rely on `settings.local.php` for setting the database connection. See [this
 commit](https://github.com/juampynr/drupal8-circleci/commit/817d0b6674c42dba73165b047b6b89d72ee72d11)
 which contains these changes among other ones. The CI scripts have their own `settings.local.php`
-which is copied on build time into `web/sites/default`.
+which is copied at build time into `web/sites/default`.
 
 ## Installation
 
-Each CI tool has its own installer, which extracts the required files to run the jobs,
-plus a set of sample PHPUnit and Behat tests.
+Each CI tool has its own installer, which extracts the required files to run the jobs. It also
+adds a demo module with tests.
 
 Choose a CI tool from the list below and follow its installation steps.
 
@@ -171,6 +175,36 @@ the following one:
 #### Database setup
 In order to build a Docker image with your project's database. Run the one-line installer mentioned
 above and then follow the instructions at the resulting [scripts/database](dist/gitlabci/scripts/database)
+directory in your local environment.
+
+## Troubleshooting
+
+### Class "\Drupal\Tests\Listeners\DrupalStandardsListener" does not exist
+
+If you get this error at the unit and kernel tests jobs, then it means that your
+project uses Drupal 8.5 or newer, which introduced a few changes at `web/core/phpunit.xml.dist`.
+
+To fix this, overwrite `.circleci/config/phpunit.xml` with `.circleci/config/phpunit-drupal-8.5.xml`
+if you are using CircleCI, or with `.travis/config/phpunit-drupal-8.5.xml` if you are using
+Travis CI.
+
+### [GitHub Actions](https://github.com/features/actions)
+
+[Demo repository](https://github.com/juampynr/drupal8-github-actions)
+
+Open a terminal and run the installer from the root of your project:
+```bash
+curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-github-actions.sh | bash
+```
+
+Review, commit, and push the resulting changes. After doing that, navigate to the repository's homepage
+at GitHub and open the Actions tab. You should see a running workflow like the following one:
+
+![GitLab pipeline](docs/images/github-actions.png)
+
+#### Database setup
+In order to build a Docker image with your project's database. Run the one-line installer mentioned
+above and then follow the instructions at the resulting [scripts/database](dist/github-actions/scripts/database)
 directory in your local environment.
 
 ## Troubleshooting
