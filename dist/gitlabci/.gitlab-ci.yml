@@ -26,7 +26,8 @@ stages:
   image: juampynr/drupal8ci:latest
   stage: test
   services:
-    - registry.gitlab.com/juampynr/drupal8-gitlab:latest
+    - name: registry.gitlab.com/juampynr/drupal8-gitlab:latest
+      alias: db
   dependencies:
     - drupal8ci:build
 
