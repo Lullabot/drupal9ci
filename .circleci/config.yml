@@ -8,7 +8,7 @@ jobs:
     docker:
       - image: juampynr/drupal8ci:latest
 
-    working_directory: /var/www/html
+    working_directory: /opt/drupal
 
     steps:
       - checkout
