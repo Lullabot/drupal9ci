@@ -25,10 +25,8 @@ drupal8ci_install() {
 	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/common/" .
 
 	# Add development dependencies to run the CircleCI jobs.
-	#
-	# behat/mink-extension is pinned until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
 	composer require --dev \
-		behat/mink-extension:v2.2 \
+		behat/mink-extension:^2.3.1 \
 		behat/mink-selenium2-driver:^1.3 \
 		bex/behat-screenshot \
 		drupal/coder:^8.2 \
