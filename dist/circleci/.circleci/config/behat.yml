@@ -24,7 +24,7 @@ default:
       drush:
         alias: 'local'
       drupal:
-        drupal_root: '/var/www/html/web'
+        drupal_root: '/opt/drupal/web'
       region_map:
         footer: "#footer"
       selectors:
