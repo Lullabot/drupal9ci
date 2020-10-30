@@ -28,7 +28,7 @@
     <!-- Example SIMPLETEST_DB value: mysql://username:password@localhost/databasename#table_prefix -->
     <env name="SIMPLETEST_DB" value="mysql://root@127.0.0.1/drupal8"/>
     <!-- Example BROWSERTEST_OUTPUT_DIRECTORY value: /path/to/webroot/sites/simpletest/browser_output -->
-    <env name="BROWSERTEST_OUTPUT_DIRECTORY" value="/var/www/html/web/sites/simpletest"/>
+    <env name="BROWSERTEST_OUTPUT_DIRECTORY" value="/opt/drupal/web/sites/simpletest"/>
   </php>
   <testsuites>
     <testsuite name="unit">
