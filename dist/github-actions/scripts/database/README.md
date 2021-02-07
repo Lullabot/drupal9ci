@@ -13,7 +13,7 @@ Create a database dump of the database and save it to `scripts/database/dumps/dr
 
 ## Authenticate, build, and push the image
 
-This implementation uses a public Docker registry at Quay.io.
+This example uses a public Docker registry at Quay.io.
 
 Here is how to build and push a new image for the first time:
 
