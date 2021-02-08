@@ -24,6 +24,8 @@ docker build --tag quay.io/juampynr/drupal8-github-actions:latest
 docker push quay.io/juampynr/drupal8-github-actions:latest
 ```
 
+You should replace `juampynr/drupal8-github-actions` with your account name and image name.
+
 ## Test the image
 
 The image can be used by adding the following to a job definition:
