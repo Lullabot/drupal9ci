@@ -25,6 +25,8 @@ docker build --tag registry.gitlab.com/juampynr/drupal8-gitlab:master
 docker push registry.gitlab.com/juampynr/drupal8-gitlab:master
 ```
 
+You should replace juampynr/drupal8-gitlab with your account name and image name.
+
 ## Test the image
 
 The image can be used by GitLab CI jobs by adding the following to a job definition:
