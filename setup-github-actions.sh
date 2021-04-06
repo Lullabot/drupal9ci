@@ -25,7 +25,7 @@ drupal8ci_install() {
 	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/common/" .
 
 	# Add development dependencies to run the jobs.
-	composer require --dev \
+	COMPOSER_MEMORY_LIMIT=-1 composer require --dev \
 		dmore/chrome-mink-driver:^2.7 \
 		weitzman/drupal-test-traits:^1.3 \
 		drupal/coder:^8.2 \
