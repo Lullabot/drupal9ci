@@ -25,12 +25,7 @@ drupal8ci_install() {
 	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/common/" .
 
 	# Add development dependencies to run the CircleCI jobs.
-	COMPOSER_MEMORY_LIMIT=-1 composer require --dev \
-		behat/mink-extension:^2.3.1 \
-		behat/mink-selenium2-driver:^1.3 \
-		bex/behat-screenshot \
-		drupal/coder:^8.2 \
-		drupal/drupal-extension:^4.0
+	COMPOSER_MEMORY_LIMIT=-1 composer require --dev drupal/core-dev
 }
 
 #######################################

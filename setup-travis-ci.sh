@@ -27,13 +27,7 @@ drupal8ci_install() {
 	# Add development dependencies to run the Travis CI jobs.
 	#
 	# behat/mink-extension is pinned until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
-	COMPOSER_MEMORY_LIMIT=-1 composer require --dev \
-		behat/mink-extension:v2.2 \
-		behat/mink-selenium2-driver:^1.3 \
-		bex/behat-screenshot \
-		drupal/coder:^8.2 \
-		drupal/drupal-extension:master-dev \
-		php-coveralls/php-coveralls
+	COMPOSER_MEMORY_LIMIT=-1 composer require --dev drupal/core-dev
 }
 
 #######################################
