@@ -27,6 +27,7 @@ drupal8ci_install() {
 	# Add development dependencies to run the CircleCI jobs.
 	COMPOSER_MEMORY_LIMIT=-1 composer require --dev \
 		drupal/core-dev \
+		dmore/chrome-mink-driver:^2.7 \
 		weitzman/drupal-test-traits:^1.2
 }
 

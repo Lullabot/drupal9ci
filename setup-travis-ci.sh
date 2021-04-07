@@ -29,6 +29,7 @@ drupal8ci_install() {
 	# behat/mink-extension is pinned until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
 	COMPOSER_MEMORY_LIMIT=-1 composer require --dev \
 		drupal/core-dev \
+		dmore/chrome-mink-driver:^2.7 \
 		weitzman/drupal-test-traits:^1.2
 }
 
