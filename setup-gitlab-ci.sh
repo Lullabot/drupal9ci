@@ -25,12 +25,9 @@ drupal8ci_install() {
 	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/common/" .
 
 	# Add development dependencies to run the GitLab CI jobs.
-	composer require --dev \
-		dmore/chrome-mink-driver:^2.7 \
-		weitzman/drupal-test-traits:^1.2 \
-		drupal/coder:^8.2 \
-		consolidation/robo:^1.4 \
-		drush/drush
+	COMPOSER_MEMORY_LIMIT=-1 composer require --dev \
+		drupal/core-dev \
+		weitzman/drupal-test-traits:^1.2
 }
 
 #######################################
