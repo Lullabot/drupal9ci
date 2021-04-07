@@ -5,7 +5,7 @@ namespace Drupal\demo_module;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
- * DemoModuleExampleService service.
+ * It gets the last node.
  */
 class DemoModuleExampleService {
 
