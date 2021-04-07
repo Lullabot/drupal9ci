@@ -93,7 +93,7 @@ class RoboFile extends \Robo\Tasks
         $tasks = [];
         $tasks[] = $this->taskFilesystemStack()
             ->mkdir('mariadb-init');
-        $tasks[] = $this->taskExec('wget ' . getenv('DB_DUMP_URL'))
+        $tasks[] = $this->taskExec('wget "' . getenv('DB_DUMP_URL') . '"')
             ->dir('mariadb-init');
         return $tasks;
     }
