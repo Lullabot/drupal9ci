@@ -25,7 +25,10 @@ drupal8ci_install() {
 	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/common/" .
 
 	# Add development dependencies to run the jobs.
-	COMPOSER_MEMORY_LIMIT=-1 composer require --dev drupal/core-dev
+	COMPOSER_MEMORY_LIMIT=-1 composer require --dev	\
+		drupal/core-dev \
+		drupal/drupal-extension
+}
 
 #######################################
 # Helper function to output a string to stderr and exit.
