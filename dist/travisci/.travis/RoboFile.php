@@ -148,6 +148,7 @@ class RoboFile extends \Robo\Tasks
         $tasks = [];
         $tasks[] = $this->taskExec('docker-compose exec -T php vendor/bin/drush --yes updatedb');
         $tasks[] = $this->taskExec('docker-compose exec -T php vendor/bin/drush --yes config-import');
+        $tasks[] = $this->taskExec('docker-compose exec -T php vendor/bin/drush cr');
         return $tasks;
     }
 

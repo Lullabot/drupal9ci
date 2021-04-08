@@ -118,6 +118,7 @@ class RoboFile extends \Robo\Tasks
         $tasks = [];
         $tasks[] = $this->drush()->args('updatedb')->option('yes')->option('verbose');
         $tasks[] = $this->drush()->args('config-import')->option('yes')->option('verbose');
+        $tasks[] = $this->drush()->args('cr')->option('verbose');
         return $tasks;
     }
 
