@@ -31,6 +31,7 @@ class RoboFile extends \Robo\Tasks {
    */
   public function jobUnitTests() {
     $collection = $this->collectionBuilder();
+    $collection->addTask($this->installDrupal());
     $collection->addTaskList($this->runUnitTests());
     return $collection->run();
   }
@@ -43,6 +44,7 @@ class RoboFile extends \Robo\Tasks {
    */
   public function jobCoverageReport() {
     $collection = $this->collectionBuilder();
+    $collection->addTask($this->installDrupal());
     $collection->addTaskList($this->runCoverageReport());
     return $collection->run();
   }
@@ -56,19 +58,6 @@ class RoboFile extends \Robo\Tasks {
   public function jobCodingStandards() {
     $collection = $this->collectionBuilder();
     $collection->addTaskList($this->runCodeSniffer());
-    return $collection->run();
-  }
-
-  /**
-   * Command to run existing site tests.
-   *
-   * @return \Robo\Result
-   *   The result tof the collection of tasks.
-   */
-  public function jobExistingSiteTests() {
-    $collection = $this->collectionBuilder();
-    $collection->addTaskList($this->runUpdateDatabase());
-    $collection->addTaskList($this->runExistingSiteTests());
     return $collection->run();
   }
 
@@ -110,8 +99,11 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function runUnitTests() {
     $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.github/config/phpunit.xml', 'web/core/phpunit.xml', $force);
     $tasks[] = $this->taskExecStack()
-      ->exec('vendor/bin/phpunit --debug --verbose --testsuite=unit,kernel --log-junit=junit.xml');
+      ->dir('web')
+      ->exec('../vendor/bin/phpunit -c core --debug --coverage-clover ../build/logs/clover.xml --verbose modules/custom');
     return $tasks;
   }
 
@@ -123,8 +115,11 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function runCoverageReport() {
     $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.github/config/phpunit.xml', 'web/core/phpunit.xml', $force);
     $tasks[] = $this->taskExecStack()
-      ->exec('vendor/bin/phpunit --debug --verbose --coverage-html ../coverage --testsuite=unit,kernel');
+      ->dir('web')
+      ->exec('../vendor/bin/phpunit -c core --debug --verbose --coverage-html ../coverage modules/custom');
     return $tasks;
   }
 
@@ -143,20 +138,6 @@ class RoboFile extends \Robo\Tasks {
     $tasks[] = $this->taskExecStack()
       ->exec('vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom')
       ->exec('vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom');
-    return $tasks;
-  }
-
-  /**
-   * Runs existing site tests.
-   *
-   * @return \Robo\Task\Base\Exec[]
-   *   An array of tasks.
-   */
-  protected function runExistingSiteTests() {
-    $tasks = [];
-    $tasks[] = $this->taskExec('sed -ri -e \'s!/var/www/html/web!' . getenv('GITHUB_WORKSPACE') . '/web!g\' /etc/apache2/sites-available/*.conf /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf');
-    $tasks[] = $this->taskExec('service apache2 start');
-    $tasks[] = $this->taskExec('vendor/bin/phpunit --debug --verbose --bootstrap=vendor/weitzman/drupal-test-traits/src/bootstrap-fast.php --testsuite=existing-site,existing-site-javascript');
     return $tasks;
   }
 
@@ -201,6 +182,21 @@ class RoboFile extends \Robo\Tasks {
       ->envVars(['COMPOSER_ALLOW_SUPERUSER' => 1, 'COMPOSER_DISCARD_CHANGES' => 1] + getenv())
       ->optimizeAutoloader();
     return $tasks;
+  }
+
+  /**
+   * Install Drupal.
+   *
+   * @return \Robo\Task\Base\Exec
+   *   A task to install Drupal.
+   */
+  protected function installDrupal()
+  {
+      $task = $this->drush()
+          ->args('site-install')
+          ->option('verbose')
+          ->option('yes');
+      return $task;
   }
 
 }
