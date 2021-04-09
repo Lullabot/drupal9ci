@@ -1,4 +1,4 @@
-# Drupal 8 CI
+# Drupal 9 CI
 
 [![CircleCI](https://circleci.com/gh/Lullabot/drupal8ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal8ci)
 
@@ -20,7 +20,7 @@ Here is a clip that shows [how it works for CircleCI](https://www.youtube.com/wa
 
 ## Requirements
 
-The scripts assume that you have a Drupal 8 project created using [drupal-project](https://github.com/drupal-composer/drupal-project),
+The scripts assume that you have a Drupal 9 project created using [drupal-project](https://github.com/drupal-composer/drupal-project),
 which sets a well known foundation. If your project's directory
 structure differs from what _drupal-project_ sets up, you will need to
 adjust the CI scripts.
@@ -206,14 +206,3 @@ at GitHub and open the Actions tab. You should see a running workflow like the f
 In order to build a Docker image with your project's database. Run the one-line installer mentioned
 above and then follow the instructions at the resulting [scripts/database](dist/github-actions/scripts/database)
 directory in your local environment.
-
-## Troubleshooting
-
-### Class "\Drupal\Tests\Listeners\DrupalStandardsListener" does not exist
-
-If you get this error at the unit and kernel tests jobs, then it means that your
-project uses Drupal 8.5 or newer, which introduced a few changes at `web/core/phpunit.xml.dist`.
-
-To fix this, overwrite `.circleci/config/phpunit.xml` with `.circleci/config/phpunit-drupal-8.5.xml`
-if you are using CircleCI, or with `.travis/config/phpunit-drupal-8.5.xml` if you are using
-Travis CI.
