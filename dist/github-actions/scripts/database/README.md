@@ -8,7 +8,7 @@ This Dockerfile creates and populates a database with the name drupal.
 
 # Building the image for the first time
 
-## Dump the Drupal 8 database
+## Dump the Drupal database
 Create a database dump of the database and save it to `scripts/database/dumps/drupal.sql`.
 
 ## Authenticate, build, and push the image
