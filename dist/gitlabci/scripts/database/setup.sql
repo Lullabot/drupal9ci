@@ -1,7 +1,7 @@
-CREATE DATABASE drupal8;
+CREATE DATABASE drupal;
 
-USE drupal8;
-SOURCE /tmp/dumps/drupal8.sql;
+USE drupal;
+SOURCE /tmp/dumps/drupal.sql;
 
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
 FLUSH PRIVILEGES;

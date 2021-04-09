@@ -25,7 +25,7 @@
     <!-- Example SIMPLETEST_BASE_URL value: http://localhost -->
     <env name="SIMPLETEST_BASE_URL" value="http://localhost"/>
     <!-- Example SIMPLETEST_DB value: mysql://username:password@localhost/databasename#table_prefix -->
-    <env name="SIMPLETEST_DB" value="mysql://root@127.0.0.1/drupal8"/>
+    <env name="SIMPLETEST_DB" value="mysql://root@127.0.0.1/drupal"/>
     <!-- Example BROWSERTEST_OUTPUT_DIRECTORY value: /path/to/webroot/sites/simpletest/browser_output -->
     <env name="BROWSERTEST_OUTPUT_DIRECTORY" value="/opt/drupal/web/sites/simpletest"/>
     <!-- To disable deprecation testing uncomment the next line. -->

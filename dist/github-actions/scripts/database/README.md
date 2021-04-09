@@ -4,12 +4,12 @@ MariaDB image. It is based on the article
 
 # Description
 
-This Dockerfile creates and populates a database with the name drupal8.
+This Dockerfile creates and populates a database with the name drupal.
 
 # Building the image for the first time
 
 ## Dump the Drupal 8 database
-Create a database dump of the database and save it to `scripts/database/dumps/drupal8.sql`.
+Create a database dump of the database and save it to `scripts/database/dumps/drupal.sql`.
 
 ## Authenticate, build, and push the image
 
@@ -46,7 +46,7 @@ Enter password:
 +--------------------+
 | Database           |
 +--------------------+
-| drupal8            |
+| drupal             |
 | information_schema |
 | mysql              |
 | performance_schema |

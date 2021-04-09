@@ -65,9 +65,7 @@ The [CircleCI configuration file](dist/circleci/.circleci/config.yml) uses a
 [custom Docker image](https://hub.docker.com/r/juampynr/drupal8ci/) that extends from
 the [official Drupal image](https://hub.docker.com/_/drupal/) and it is [hosted at
 Docker Hub](https://hub.docker.com/r/juampynr/drupal8ci/). If this image
-does not fit your project's architecture, then have a look at its
-[Dockerfile](https://github.com/Lullabot/drupal9ci/blob/master/circleci/.circleci/images/primary/Dockerfile)
-and consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
+does not fit your project's architecture then consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
 based out of it.
    
 #### Setting up the update path
