@@ -1,6 +1,6 @@
 # Drupal 8 CI
 
-[![CircleCI](https://circleci.com/gh/Lullabot/drupal8ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal8ci)
+[![CircleCI](https://circleci.com/gh/Lullabot/drupal9ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal9ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
 project using any of the following CI providers:
@@ -44,7 +44,7 @@ Choose a CI tool from the list below and follow its installation steps.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-circleci.sh | bash
+curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-circleci.sh | bash
 ```
 
 Sign up at [CircleCI](https://circleci.com/) and allow access to your project's repository.
@@ -66,7 +66,7 @@ The [CircleCI configuration file](dist/circleci/.circleci/config.yml) uses a
 the [official Drupal image](https://hub.docker.com/_/drupal/) and it is [hosted at
 Docker Hub](https://hub.docker.com/r/juampynr/drupal8ci/). If this image
 does not fit your project's architecture, then have a look at its
-[Dockerfile](https://github.com/Lullabot/drupal8ci/blob/master/circleci/.circleci/images/primary/Dockerfile)
+[Dockerfile](https://github.com/Lullabot/drupal9ci/blob/master/circleci/.circleci/images/primary/Dockerfile)
 and consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
 based out of it.
    
@@ -98,7 +98,7 @@ use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-travis-ci.sh | bash
+curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-travis-ci.sh | bash
 ```
 
 Sign up at [Travis CI](https://travis-ci.com/) and allow access to your project's repository:
@@ -163,7 +163,7 @@ use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-gitlab-ci.sh | bash
+curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-gitlab-ci.sh | bash
 ```
 
 Review, commit, and push the resulting changes. After doing that, navigate to the project's homepage
@@ -194,7 +194,7 @@ Travis CI.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-github-actions.sh | bash
+curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-github-actions.sh | bash
 ```
 
 Review, commit, and push the resulting changes. After doing that, navigate to the repository's homepage
