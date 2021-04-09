@@ -7,7 +7,7 @@
 # piping this script to bash. Ideally you should avoid piping scripts to bash.
 # If you'd like to install without this script, here's where to look:
 #######################################
-drupal8ci_install() {
+drupal9ci_install() {
 	check_dependencies
 
 	# Create a temporary directory for installation.
@@ -18,11 +18,11 @@ drupal8ci_install() {
 	# Turn on xtracing and error detection so users know what's happening.
 	set -ex
 	# Download and extract CircleCI configuration and sample tests.
-	wget -O "$tmpdir/master.zip" https://github.com/Lullabot/drupal8ci/archive/master.zip
-	unzip "$tmpdir/master.zip" 'drupal8ci-master/dist/circleci/*' -d "$tmpdir"
-	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/circleci/" .
-	unzip "$tmpdir/master.zip" 'drupal8ci-master/dist/common/*' -d "$tmpdir"
-	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/common/" .
+	wget -O "$tmpdir/master.zip" https://github.com/Lullabot/drupal9ci/archive/master.zip
+	unzip "$tmpdir/master.zip" 'drupal9ci-master/dist/circleci/*' -d "$tmpdir"
+	rsync -va --ignore-existing "$tmpdir/drupal9ci-master/dist/circleci/" .
+	unzip "$tmpdir/master.zip" 'drupal9ci-master/dist/common/*' -d "$tmpdir"
+	rsync -va --ignore-existing "$tmpdir/drupal9ci-master/dist/common/" .
 
 	# Add development dependencies to run the CircleCI jobs.
 	COMPOSER_MEMORY_LIMIT=-1 composer require --dev	\
@@ -67,4 +67,4 @@ cleanup() {
 	rm -r $1
 }
 
-drupal8ci_install
+drupal9ci_install

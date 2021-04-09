@@ -5,7 +5,7 @@
  */
 
 $databases['default']['default'] = [
-  'database' => 'drupal8',
+  'database' => 'drupal',
   'username' => 'root',
   'password' => 'root',
   'prefix' => '',

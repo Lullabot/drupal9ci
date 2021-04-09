@@ -20,8 +20,8 @@ stages:
   cache:
     policy: pull
 
-# The template for Drupal8CI tests.
-.drupal8ci_test_template:
+# The template for Drupal9CI tests.
+.drupal9ci_test_template:
   extends: .cache_strategy_pull
   image: juampynr/drupal8ci:latest
   stage: test
@@ -29,10 +29,10 @@ stages:
     - name: registry.gitlab.com/juampynr/drupal8-gitlab:latest
       alias: db
   dependencies:
-    - drupal8ci:build
+    - drupal9ci:build
 
 ## Job to build the environment.
-drupal8ci:build:
+drupal9ci:build:
   extends: .cache_strategy_push
   image: juampynr/drupal8ci:latest
   stage: build
@@ -43,7 +43,7 @@ drupal8ci:build:
       - ./*
 
 ## Job to check coding standards.
-drupal8ci:code_sniffer:
+drupal9ci:code_sniffer:
   extends: .cache_strategy_pull
   image: juampynr/drupal8ci:latest
   script: vendor/bin/robo job:coding-standards
@@ -52,8 +52,8 @@ drupal8ci:code_sniffer:
       - artifacts/phpcs/phpcs.xml
 
 ## Job to run Unit and Kernel tests.
-drupal8ci:unit_kernel_tests:
-  extends: .drupal8ci_test_template
+drupal9ci:unit_kernel_tests:
+  extends: .drupal9ci_test_template
   script: vendor/bin/robo job:unit-tests
   artifacts:
     paths:
@@ -62,8 +62,8 @@ drupal8ci:unit_kernel_tests:
       junit: junit.xml
 
 ## Job to check test coverage.
-drupal8ci:code_coverage:
-  extends: .drupal8ci_test_template
+drupal9ci:code_coverage:
+  extends: .drupal9ci_test_template
   script: vendor/bin/robo job:coverage-report
   artifacts:
     paths:
@@ -71,8 +71,8 @@ drupal8ci:code_coverage:
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
 
 # Job to run existing site tests
-drupal8ci:existing_site_tests:
-  extends: .drupal8ci_test_template
+drupal9ci:existing_site_tests:
+  extends: .drupal9ci_test_template
   script:
     - vendor/bin/robo run:chrome-headless &
     - vendor/bin/robo job:existing-site-tests

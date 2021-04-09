@@ -8,9 +8,12 @@ jobs:
 
     services:
       mariadb:
-        image: quay.io/juampynr/drupal8-github-actions:latest
+        image: mariadb:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
         ports:
-          - 33306:3306
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v1
@@ -48,9 +51,12 @@ jobs:
 
     services:
       mariadb:
-        image: quay.io/juampynr/drupal8-github-actions:latest
+        image: mariadb:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
         ports:
-          - 33306:3306
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v1
@@ -70,28 +76,3 @@ jobs:
         with:
           name: coverage
           path: coverage
-
-  existing-site-tests:
-    runs-on: ubuntu-latest
-    container:
-      image: juampynr/drupal8ci:latest
-
-    services:
-      mariadb:
-        image: quay.io/juampynr/drupal8-github-actions:latest
-        ports:
-          - 33306:3306
-
-    steps:
-      - uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
-
-      - name: Build project
-        run: |
-          robo job:build
-
-      - name: Run existing site tests
-        run: |
-          vendor/bin/robo run:chrome-headless &
-          vendor/bin/robo job:existing-site-tests
