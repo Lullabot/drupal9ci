@@ -93,7 +93,7 @@ class RoboFile extends \Robo\Tasks
         $tasks = [];
         $tasks[] = $this->taskFilesystemStack()
             ->mkdir('mariadb-init');
-        $tasks[] = $this->taskExec('wget ' . getenv('DB_DUMP_URL'))
+        $tasks[] = $this->taskExec('wget "' . getenv('DB_DUMP_URL') . '"')
             ->dir('mariadb-init');
         return $tasks;
     }
@@ -148,6 +148,7 @@ class RoboFile extends \Robo\Tasks
         $tasks = [];
         $tasks[] = $this->taskExec('docker-compose exec -T php vendor/bin/drush --yes updatedb');
         $tasks[] = $this->taskExec('docker-compose exec -T php vendor/bin/drush --yes config-import');
+        $tasks[] = $this->taskExec('docker-compose exec -T php vendor/bin/drush cr');
         return $tasks;
     }
 

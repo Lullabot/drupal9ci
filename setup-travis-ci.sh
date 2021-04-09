@@ -25,12 +25,9 @@ drupal8ci_install() {
 	rsync -va --ignore-existing "$tmpdir/drupal8ci-master/dist/common/" .
 
 	# Add development dependencies to run the Travis CI jobs.
-	#
-	# behat/mink-extension is pinned until https://github.com/Behat/MinkExtension/pull/311 gets fixed.
-	COMPOSER_MEMORY_LIMIT=-1 composer require --dev \
+	COMPOSER_MEMORY_LIMIT=-1 composer require --dev	\
 		drupal/core-dev \
-		dmore/chrome-mink-driver:^2.7 \
-		weitzman/drupal-test-traits:^1.2
+		drupal/drupal-extension
 }
 
 #######################################

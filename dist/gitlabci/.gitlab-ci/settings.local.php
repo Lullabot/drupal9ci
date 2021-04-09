@@ -17,3 +17,7 @@ $databases['default']['default'] = [
 
 // Display errors.
 $config['system.logging']['error_level'] = 'verbose';
+
+if (empty($settings['hash_salt'])) {
+  $settings['hash_salt'] = 'drupal-ci';
+}
