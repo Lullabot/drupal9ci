@@ -1,6 +1,6 @@
 # Drupal 9 CI
 
-[![CircleCI](https://circleci.com/gh/Lullabot/drupal8ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal8ci)
+[![CircleCI](https://circleci.com/gh/Lullabot/drupal9ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal9ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
 project using any of the following CI providers:
