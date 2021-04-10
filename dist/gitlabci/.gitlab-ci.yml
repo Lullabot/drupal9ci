@@ -69,10 +69,3 @@ drupal9ci:code_coverage:
     paths:
       - artifacts
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
-
-# Job to run existing site tests
-drupal9ci:existing_site_tests:
-  extends: .drupal9ci_test_template
-  script:
-    - vendor/bin/robo run:chrome-headless &
-    - vendor/bin/robo job:existing-site-tests

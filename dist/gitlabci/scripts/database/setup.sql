@@ -1,7 +1,0 @@
-CREATE DATABASE drupal;
-
-USE drupal;
-SOURCE /tmp/dumps/drupal.sql;
-
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
