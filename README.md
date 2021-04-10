@@ -1,8 +1,8 @@
-# Drupal 8 CI
+# Drupal 9 CI
 
-[![CircleCI](https://circleci.com/gh/Lullabot/drupal8ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal8ci)
+[![CircleCI](https://circleci.com/gh/Lullabot/drupal9ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal9ci)
 
-This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 8
+This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 9
 project using any of the following CI providers:
 
  * [CircleCI](#circleci)
@@ -20,7 +20,7 @@ Here is a clip that shows [how it works for CircleCI](https://www.youtube.com/wa
 
 ## Requirements
 
-The scripts assume that you have a Drupal 8 project created using [drupal-project](https://github.com/drupal-composer/drupal-project),
+The scripts assume that you have a Drupal 9 project created using [drupal-project](https://github.com/drupal-composer/drupal-project),
 which sets a well known foundation. If your project's directory
 structure differs from what _drupal-project_ sets up, you will need to
 adjust the CI scripts.
@@ -44,7 +44,7 @@ Choose a CI tool from the list below and follow its installation steps.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-circleci.sh | bash
+curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-circleci.sh | bash
 ```
 
 Sign up at [CircleCI](https://circleci.com/) and allow access to your project's repository.
@@ -65,14 +65,12 @@ The [CircleCI configuration file](dist/circleci/.circleci/config.yml) uses a
 [custom Docker image](https://hub.docker.com/r/juampynr/drupal8ci/) that extends from
 the [official Drupal image](https://hub.docker.com/_/drupal/) and it is [hosted at
 Docker Hub](https://hub.docker.com/r/juampynr/drupal8ci/). If this image
-does not fit your project's architecture, then have a look at its
-[Dockerfile](https://github.com/Lullabot/drupal8ci/blob/master/circleci/.circleci/images/primary/Dockerfile)
-and consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
+does not fit your project's architecture then consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
 based out of it.
    
 #### Setting up the update path
 
-The Behat job requires a running Drupal 8 site. The repository contains the code, but for running
+The Behat job requires a running Drupal 9 site. The repository contains the code, but for running
 tests in a realistic environment you need:
 
 ##### 1. A recent copy of the production environment's database
@@ -98,7 +96,7 @@ use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-travis-ci.sh | bash
+curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-travis-ci.sh | bash
 ```
 
 Sign up at [Travis CI](https://travis-ci.com/) and allow access to your project's repository:
@@ -163,7 +161,7 @@ use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-gitlab-ci.sh | bash
+curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-gitlab-ci.sh | bash
 ```
 
 Review, commit, and push the resulting changes. After doing that, navigate to the project's homepage
@@ -177,16 +175,6 @@ In order to build a Docker image with your project's database. Run the one-line 
 above and then follow the instructions at the resulting [scripts/database](dist/gitlabci/scripts/database)
 directory in your local environment.
 
-## Troubleshooting
-
-### Class "\Drupal\Tests\Listeners\DrupalStandardsListener" does not exist
-
-If you get this error at the unit and kernel tests jobs, then it means that your
-project uses Drupal 8.5 or newer, which introduced a few changes at `web/core/phpunit.xml.dist`.
-
-To fix this, overwrite `.circleci/config/phpunit.xml` with `.circleci/config/phpunit-drupal-8.5.xml`
-if you are using CircleCI, or with `.travis/config/phpunit-drupal-8.5.xml` if you are using
-Travis CI.
 
 ### [GitHub Actions](https://github.com/features/actions)
 
@@ -194,7 +182,7 @@ Travis CI.
 
 Open a terminal and run the installer from the root of your project:
 ```bash
-curl -L https://github.com/lullabot/drupal8ci/raw/master/setup-github-actions.sh | bash
+curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-github-actions.sh | bash
 ```
 
 Review, commit, and push the resulting changes. After doing that, navigate to the repository's homepage
@@ -206,14 +194,3 @@ at GitHub and open the Actions tab. You should see a running workflow like the f
 In order to build a Docker image with your project's database. Run the one-line installer mentioned
 above and then follow the instructions at the resulting [scripts/database](dist/github-actions/scripts/database)
 directory in your local environment.
-
-## Troubleshooting
-
-### Class "\Drupal\Tests\Listeners\DrupalStandardsListener" does not exist
-
-If you get this error at the unit and kernel tests jobs, then it means that your
-project uses Drupal 8.5 or newer, which introduced a few changes at `web/core/phpunit.xml.dist`.
-
-To fix this, overwrite `.circleci/config/phpunit.xml` with `.circleci/config/phpunit-drupal-8.5.xml`
-if you are using CircleCI, or with `.travis/config/phpunit-drupal-8.5.xml` if you are using
-Travis CI.
