@@ -90,7 +90,7 @@ class RoboFile extends \Robo\Tasks {
   protected function runUnitTests() {
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
-      ->copy('.gitlab-ci/config/phpunit.xml', 'web/core/phpunit.xml', $force);
+      ->copy('.gitlab-ci/phpunit.xml', 'web/core/phpunit.xml', $force);
     $tasks[] = $this->taskExecStack()
       ->dir('web')
       ->exec('../vendor/bin/phpunit -c core --debug --coverage-clover ../build/logs/clover.xml --verbose modules/custom');
@@ -109,7 +109,7 @@ class RoboFile extends \Robo\Tasks {
     //   ->mkdir('artifacts/coverage-xml', 777)
     //   ->mkdir('artifacts/coverage-html', 777);
     $tasks[] = $this->taskFilesystemStack()
-      ->copy('.gitlab-ci/config/phpunit.xml', 'web/core/phpunit.xml', $force);
+      ->copy('.gitlab-ci/phpunit.xml', 'web/core/phpunit.xml', $force);
     $tasks[] = $this->taskExecStack()
       ->dir('web')
       ->exec('../vendor/bin/phpunit -c core --debug --verbose --coverage-html ../coverage modules/custom');
