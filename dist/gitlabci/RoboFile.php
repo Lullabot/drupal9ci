@@ -105,9 +105,6 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function runCoverageReport() {
     $tasks = [];
-    // $tasks[] = $this->taskFilesystemStack()
-    //   ->mkdir('artifacts/coverage-xml', 777)
-    //   ->mkdir('artifacts/coverage-html', 777);
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.gitlab-ci/phpunit.xml', 'web/core/phpunit.xml', $force);
     $tasks[] = $this->taskExecStack()
