@@ -35,8 +35,6 @@ stages:
     - mysql --version
     - sleep 10
     - echo "SHOW tables;"| mysql -u root -p"$MYSQL_ROOT_PASSWORD" -h db "${MYSQL_DATABASE}"
-
-
   dependencies:
     - drupal9ci:build
 
