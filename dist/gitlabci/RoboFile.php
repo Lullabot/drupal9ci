@@ -182,11 +182,11 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function installDrupal()
   {
-      $task = $this->drush()
-          ->args('site-install')
-          ->option('verbose')
-          ->option('yes');
-      return $task;
+    $task = $this->drush()
+      ->args('site-install')
+      ->option('verbose')
+      ->option('yes');
+    return $task;
   }
 
 }
