@@ -236,7 +236,7 @@ class RoboFile extends \Robo\Tasks {
   {
     $force = true;
     $tasks = [];
-    $tasks[] = $this->taskExec('mysql -u root -p root -h mariadb -e "create database drupal"');
+    $tasks[] = $this->taskExec('mysql -u root -proot -h mariadb -e "create database drupal"');
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.github/config/settings.local.php', 'web/sites/default/settings.local.php', $force);
     $tasks[] = $this->taskExec('wget -O dump.sql "' . getenv('DB_DUMP_URL') . '"');
