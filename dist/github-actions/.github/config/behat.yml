@@ -24,7 +24,9 @@ default:
       drush:
         alias: 'local'
       drupal:
-        drupal_root: '/opt/drupal/web'
+        # Copy install path from Github actions. ie: '/__w/repo-name/repo-name/web'
+        # There is a `drush st` that will give you that information.
+        drupal_root: 'CHANGE-THIS'
       region_map:
         footer: "#footer"
       selectors:

@@ -114,6 +114,16 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
+   * Command to run Chrome headless.
+   *
+   * @return \Robo\Result
+   *   The result tof the task
+   */
+  public function runChromeHeadless() {
+    return $this->taskExec('google-chrome-unstable --disable-gpu --headless --no-sandbox --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222')->run();
+  }
+
+  /**
    * Generates a code coverage report.
    *
    * @return \Robo\Task\Base\Exec[]
