@@ -62,6 +62,22 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
+   * Command to run behat tests.
+   *
+   * @return \Robo\Result
+   *   The result tof the collection of tasks.
+   */
+  public function jobBehatTests()
+  {
+    $collection = $this->collectionBuilder();
+    $collection->addTask($this->runComposer());
+    $collection->addTaskList($this->importDatabase());
+    $collection->addTaskList($this->runUpdateDatabase());
+    $collection->addTaskList($this->runBehatTests());
+    return $collection->run();
+  }
+
+  /**
    * Updates the database.
    *
    * @return \Robo\Task\Base\Exec[]
@@ -132,6 +148,22 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
+   * Runs Behat tests.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function runBehatTests()
+  {
+    $force = true;
+    $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.github/config/behat.yml', 'tests/behat.yml', $force);
+    $tasks[] = $this->taskExec('vendor/bin/behat --verbose -c tests/behat.yml');
+    return $tasks;
+  }
+
+  /**
    * Return drush with default arguments.
    *
    * @return \Robo\Task\Base\Exec
@@ -188,5 +220,29 @@ class RoboFile extends \Robo\Tasks {
       ->option('yes');
     return $task;
   }
+
+  /**
+   * Imports and updates the database.
+   *
+   * This task assumes that there is an environment variable $DB_DUMP_URL
+   * that contains a URL to a database dump. Ideally, you should set up drush
+   * site aliases and then replace this task by a drush sql-sync one. See the
+   * README at lullabot/drupal9ci for further details.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function importDatabase()
+  {
+    $force = true;
+    $tasks = [];
+    $tasks[] = $this->taskExec('mysql -u root -p root -h mariadb -e "create database drupal"');
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.github/config/settings.local.php', 'web/sites/default/settings.local.php', $force);
+    $tasks[] = $this->taskExec('wget -O dump.sql "' . getenv('DB_DUMP_URL') . '"');
+    $tasks[] = $this->drush()->rawArg('sql-cli < dump.sql');
+    return $tasks;
+  }
+
 
 }

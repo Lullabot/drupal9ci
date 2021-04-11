@@ -76,3 +76,30 @@ jobs:
         with:
           name: coverage
           path: coverage
+
+  behat:
+    runs-on: ubuntu-latest
+    container:
+      image: juampynr/drupal8ci:latest
+    services:
+      mariadb:
+        image: mariadb:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    env:
+      FOO: bar
+      # DB_DUMP_URL: "URL of DB dump"
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Build project
+        run: |
+          robo job:build
+
+      - name: Run PHPUnit tests
+        run: vendor/bin/robo job:behat-tests
