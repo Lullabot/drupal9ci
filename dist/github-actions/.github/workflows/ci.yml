@@ -103,5 +103,5 @@ jobs:
 
       - name: Run Behat tests
         run: |
-          vendor/bin/robo run:chrome-headless &
+          vendor/bin/robo job:serve-drupal &
           vendor/bin/robo job:behat-tests
