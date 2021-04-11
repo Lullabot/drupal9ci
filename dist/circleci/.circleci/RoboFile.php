@@ -170,7 +170,6 @@ class RoboFile extends \Robo\Tasks
      */
     protected function installDrupal()
     {
-
         $task = $this->drush()
             ->args('site-install')
             ->option('verbose')
