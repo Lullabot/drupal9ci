@@ -70,7 +70,7 @@ class RoboFile extends \Robo\Tasks {
   public function jobBehatTests()
   {
     $collection = $this->collectionBuilder();
-    $collection->addTask($this->runComposer());
+    $collection->addTaskList($this->runComposer());
     $collection->addTaskList($this->importDatabase());
     $collection->addTaskList($this->runUpdateDatabase());
     $collection->addTaskList($this->runBehatTests());
