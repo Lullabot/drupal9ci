@@ -26,6 +26,7 @@ default:
       drupal:
         # Copy install path from Github actions. ie: '/__w/repo-name/repo-name/web'
         # There is a `drush st` that will give you that information.
+        # This is also obtained via: `getenv('GITHUB_WORKSPACE')/web`
         drupal_root: 'CHANGE-THIS'
       region_map:
         footer: "#footer"
