@@ -168,7 +168,6 @@ class RoboFile extends \Robo\Tasks {
    */
   function runServeDrupal()
   {
-    $force = true;
     $tasks = [];
     $tasks[] = $this->taskExec('vendor/bin/drush serve 80 &');
     return $tasks;
