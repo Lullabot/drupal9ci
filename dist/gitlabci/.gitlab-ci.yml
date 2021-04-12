@@ -26,8 +26,15 @@ stages:
   image: juampynr/drupal8ci:latest
   stage: test
   services:
-    - name: registry.gitlab.com/juampynr/drupal8-gitlab:latest
+    - name: mariadb:latest
       alias: db
+  variables:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: drupal
+  script:
+    - mysql --version
+    - sleep 10
+    - echo "SHOW tables;"| mysql -u root -p"$MYSQL_ROOT_PASSWORD" -h db "${MYSQL_DATABASE}"
   dependencies:
     - drupal9ci:build
 
