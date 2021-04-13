@@ -169,7 +169,9 @@ class RoboFile extends \Robo\Tasks {
   function runServeDrupal()
   {
     $tasks = [];
-    $tasks[] = $this->taskExec('vendor/bin/drush serve 80 &');
+    $tasks[] = $this->taskExec('chown -R www-data:www-data ' . getenv('CI_PROJECT_DIR'));
+    $tasks[] = $this->taskExec('ln -sf ' . getenv('CI_PROJECT_DIR') . '/web /var/www/html');
+    $tasks[] = $this->taskExec('service apache2 start');
     return $tasks;
   }
 
@@ -263,7 +265,7 @@ class RoboFile extends \Robo\Tasks {
   {
     $force = true;
     $tasks = [];
-    $tasks[] = $this->taskExec('mysql -u root -proot -h mariadb -e "create database drupal"');
+    $tasks[] = $this->taskExec('mysql -u root -proot -h mariadb -e "create database if not exists drupal"');
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.gitlab-ci/settings.local.php', 'web/sites/default/settings.local.php', $force);
     $tasks[] = $this->taskExec('wget -O dump.sql "' . getenv('DB_DUMP_URL') . '"');

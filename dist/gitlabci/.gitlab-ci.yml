@@ -76,3 +76,18 @@ drupal9ci:code_coverage:
     paths:
       - artifacts
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+
+## Job to run behat.
+drupal9ci:behat:
+  extends: .drupal9ci_test_template
+  image: juampynr/drupal8ci:latest
+  variables:
+    FOO: bar
+    # DB_DUMP_URL: "URL to your DB dump"
+  before_script:
+    - vendor/bin/robo job:serve-drupal
+  script:
+    - vendor/bin/robo job:behat-tests
+  artifacts:
+    paths:
+      - artifacts
