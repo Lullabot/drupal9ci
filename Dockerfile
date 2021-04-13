@@ -9,11 +9,11 @@ RUN apt-get update && apt-get install -y \
   sudo \
   unzip \
   vim \
-  wget \
-  && docker-php-ext-install bcmath \
-  && docker-php-ext-install mysqli \
-  && docker-php-ext-install pdo \
-  && docker-php-ext-install pdo_mysql
+  wget && \
+  docker-php-ext-install bcmath && \
+  docker-php-ext-install mysqli && \
+  docker-php-ext-install pdo && \
+  docker-php-ext-install pdo_mysql
 
 # Remove the memory limit for the CLI only.
 RUN echo 'memory_limit = -1' > /usr/local/etc/php/php-cli.ini
@@ -23,34 +23,35 @@ RUN rm -rf ..?* .[!.]* *
 
 # Install composer.
 COPY scripts/composer-installer.sh /tmp/composer-installer.sh
-RUN chmod +x /tmp/composer-installer.sh
-RUN /tmp/composer-installer.sh
-RUN mv composer.phar /usr/local/bin/composer
+RUN chmod +x /tmp/composer-installer.sh && \
+    /tmp/composer-installer.sh && \
+    mv composer.phar /usr/local/bin/composer && \
+    composer self-update --1
 
 # Put a turbo on composer.
 RUN composer global require hirak/prestissimo
 
 # Install XDebug.
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
+RUN pecl install xdebug && \
+    docker-php-ext-enable xdebug
 
 # Install Robo CI.
-RUN wget https://robo.li/robo.phar
-RUN chmod +x robo.phar && mv robo.phar /usr/local/bin/robo
+RUN wget https://robo.li/robo.phar && \
+    chmod +x robo.phar && mv robo.phar /usr/local/bin/robo
 
 # Install Dockerize.
 ENV DOCKERIZE_VERSION v0.6.0
-RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 # Install ImageMagic to take screenshots.
-RUN pecl install imagick \
-    && docker-php-ext-enable imagick
+RUN pecl install imagick && \
+    docker-php-ext-enable imagick
 
 # Install Chrome browser.
-RUN apt-get install --yes gnupg2 apt-transport-https
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-RUN sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-RUN apt-get update
-RUN apt-get install --yes google-chrome-unstable
+RUN apt-get install --yes gnupg2 apt-transport-https && \
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
+    sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
+    apt-get update && \
+    apt-get install --yes google-chrome-unstable
