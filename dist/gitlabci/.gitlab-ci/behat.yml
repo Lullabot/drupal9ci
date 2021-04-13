@@ -9,14 +9,17 @@ default:
   extensions:
     Behat\MinkExtension:
       goutte: ~
-      base_url: http://apache
+      base_url: http://localhost
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: 'drupal'
       drush:
         alias: 'local'
       drupal:
-        drupal_root: '/var/www/html/web'
+        # Copy install path from Github actions. ie: '/__w/repo-name/repo-name/web'
+        # There is a `drush st` that will give you that information.
+        # This is also obtained via: `getenv('GITHUB_WORKSPACE')/web`
+        drupal_root: 'CHANGE-THIS'
       region_map:
         footer: "#footer"
       selectors:

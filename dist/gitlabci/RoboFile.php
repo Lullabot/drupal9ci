@@ -62,6 +62,34 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
+   * Command to run behat tests.
+   *
+   * @return \Robo\Result
+   *   The result tof the collection of tasks.
+   */
+  public function jobBehatTests()
+  {
+    $collection = $this->collectionBuilder();
+    $collection->addTaskList($this->runBehatTests());
+    return $collection->run();
+  }
+
+  /**
+   * Serve Drupal.
+   *
+   * @return \Robo\Result
+   *   The result tof the collection of tasks.
+   */
+  public function jobServeDrupal()
+  {
+    $collection = $this->collectionBuilder();
+    $collection->addTaskList($this->importDatabase());
+    $collection->addTaskList($this->runUpdateDatabase());
+    $collection->addTaskList($this->runServeDrupal());
+    return $collection->run();
+  }
+
+  /**
    * Updates the database.
    *
    * @return \Robo\Task\Base\Exec[]
@@ -78,6 +106,7 @@ class RoboFile extends \Robo\Tasks {
       ->option('yes')
       ->option('verbose');
     $tasks[] = $this->drush()->args('cache:rebuild')->option('verbose');
+    $tasks[] = $this->drush()->args('st');
     return $tasks;
   }
 
@@ -128,6 +157,38 @@ class RoboFile extends \Robo\Tasks {
     $tasks[] = $this->taskExecStack()
       ->exec('vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom')
       ->exec('vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom');
+    return $tasks;
+  }
+
+  /**
+   * Serves Drupal.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  function runServeDrupal()
+  {
+    $tasks = [];
+    $tasks[] = $this->taskExec('chown -R www-data:www-data ' . getenv('CI_PROJECT_DIR'));
+    $tasks[] = $this->taskExec('ln -sf ' . getenv('CI_PROJECT_DIR') . '/web /var/www/html');
+    $tasks[] = $this->taskExec('service apache2 start');
+    return $tasks;
+  }
+
+  /**
+   * Runs Behat tests.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function runBehatTests()
+  {
+    $force = true;
+    $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.gitlab-ci/behat.yml', 'tests/behat.yml', $force);
+    $tasks[] = $this->taskExec('sleep 30s');
+    $tasks[] = $this->taskExec('vendor/bin/behat --verbose -c tests/behat.yml');
     return $tasks;
   }
 
@@ -187,6 +248,29 @@ class RoboFile extends \Robo\Tasks {
       ->option('verbose')
       ->option('yes');
     return $task;
+  }
+
+  /**
+   * Imports and updates the database.
+   *
+   * This task assumes that there is an environment variable $DB_DUMP_URL
+   * that contains a URL to a database dump. Ideally, you should set up drush
+   * site aliases and then replace this task by a drush sql-sync one. See the
+   * README at lullabot/drupal9ci for further details.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function importDatabase()
+  {
+    $force = true;
+    $tasks = [];
+    $tasks[] = $this->taskExec('mysql -u root -proot -h mariadb -e "create database if not exists drupal"');
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.gitlab-ci/settings.local.php', 'web/sites/default/settings.local.php', $force);
+    $tasks[] = $this->taskExec('wget -O dump.sql "' . getenv('DB_DUMP_URL') . '"');
+    $tasks[] = $this->drush()->rawArg('sql-cli < dump.sql');
+    return $tasks;
   }
 
 }
