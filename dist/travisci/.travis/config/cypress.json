@@ -1,0 +1,6 @@
+{
+  "baseUrl": "http://apache",
+  "env": {
+    "FOO": "bar"
+  }
+}
