@@ -130,6 +130,7 @@ class RoboFile extends \Robo\Tasks {
    *   An array of tasks.
    */
   protected function runUnitTests() {
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.github/config/phpunit.xml', 'web/core/phpunit.xml', $force);
@@ -146,6 +147,7 @@ class RoboFile extends \Robo\Tasks {
    *   An array of tasks.
    */
   protected function runCoverageReport() {
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.github/config/phpunit.xml', 'web/core/phpunit.xml', $force);
@@ -194,7 +196,7 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function runBehatTests()
   {
-    $force = true;
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.github/config/behat.yml', 'tests/behat.yml', $force);
@@ -211,7 +213,7 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function runCypressTests()
   {
-    $force = true;
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('cypress/cypress.json', 'cypress.json', $force)
@@ -291,7 +293,7 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function importDatabase()
   {
-    $force = true;
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskExec('mysql -u root -proot -h mariadb -e "create database drupal"');
     $tasks[] = $this->taskFilesystemStack()

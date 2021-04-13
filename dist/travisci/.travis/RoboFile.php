@@ -123,7 +123,7 @@ class RoboFile extends \Robo\Tasks
      */
     protected function buildEnvironment()
     {
-        $force = true;
+        $force = TRUE;
         $tasks = [];
         $tasks[] = $this->taskFilesystemStack()
             ->copy('.travis/docker-compose.yml', 'docker-compose.yml', $force)
@@ -195,7 +195,7 @@ class RoboFile extends \Robo\Tasks
      */
     protected function runUnitTests()
     {
-        $force = true;
+        $force = TRUE;
         $tasks = [];
         $tasks[] = $this->taskFilesystemStack()
             ->copy('.travis/config/phpunit.xml', 'web/core/phpunit.xml', $force);
@@ -227,7 +227,6 @@ class RoboFile extends \Robo\Tasks
      */
     protected function runCypressTests()
     {
-        $force = true;
         $tasks = [];
         $tasks[] = $this->taskExecStack()
             ->exec('docker-compose exec -T node npm install cypress --save-dev');

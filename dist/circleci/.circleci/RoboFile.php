@@ -113,7 +113,7 @@ class RoboFile extends \Robo\Tasks
      */
     protected function importDatabase()
     {
-        $force = true;
+        $force = TRUE;
         $tasks = [];
         $tasks[] = $this->taskExec('mysql -u root -h 127.0.0.1 -e "create database drupal"');
         $tasks[] = $this->taskFilesystemStack()
@@ -147,7 +147,7 @@ class RoboFile extends \Robo\Tasks
      */
     protected function runBehatTests()
     {
-        $force = true;
+        $force = TRUE;
         $tasks = [];
         $tasks[] = $this->taskExec('service apache2 start');
         $tasks[] = $this->taskFilesystemStack()
@@ -164,7 +164,7 @@ class RoboFile extends \Robo\Tasks
      */
     protected function runCypressTests()
     {
-        $force = true;
+        $force = TRUE;
         $tasks = [];
         $tasks[] = $this->taskExec('service apache2 start');
         $tasks[] = $this->taskFilesystemStack()
@@ -223,7 +223,7 @@ class RoboFile extends \Robo\Tasks
      */
     protected function runUnitTests()
     {
-        $force = true;
+        $force = TRUE;
         $tasks = [];
         $tasks[] = $this->taskFilesystemStack()
             ->copy('.circleci/config/phpunit.xml', 'web/core/phpunit.xml', $force)
@@ -242,7 +242,7 @@ class RoboFile extends \Robo\Tasks
      */
     protected function runUnitTestsWithCoverage()
     {
-        $force = true;
+        $force = TRUE;
         $tasks = [];
         $tasks[] = $this->taskFilesystemStack()
             ->copy('.circleci/config/phpunit.xml', 'web/core/phpunit.xml', $force)

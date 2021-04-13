@@ -130,6 +130,7 @@ class RoboFile extends \Robo\Tasks {
    *   An array of tasks.
    */
   protected function runUnitTests() {
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.gitlab-ci/phpunit.xml', 'web/core/phpunit.xml', $force);
@@ -196,7 +197,7 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function runBehatTests()
   {
-    $force = true;
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.gitlab-ci/behat.yml', 'tests/behat.yml', $force);
@@ -293,7 +294,7 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function importDatabase()
   {
-    $force = true;
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskExec('mysql -u root -proot -h mariadb -e "create database if not exists drupal"');
     $tasks[] = $this->taskFilesystemStack()
