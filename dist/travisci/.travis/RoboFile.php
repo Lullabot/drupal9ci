@@ -83,6 +83,23 @@ class RoboFile extends \Robo\Tasks
     }
 
     /**
+     * Command to run Cypress tests.
+     *
+     * @return \Robo\Result
+     *   The result tof the collection of tasks.
+     */
+    public function jobCypressTests()
+    {
+        $collection = $this->collectionBuilder();
+        $collection->addTaskList($this->downloadDatabase());
+        $collection->addTaskList($this->buildEnvironment());
+        $collection->addTask($this->waitForDrupal());
+        $collection->addTaskList($this->runUpdatePath());
+        $collection->addTaskList($this->runCypressTests());
+        return $collection->run();
+    }
+
+    /**
      * Download's database to use within a Docker environment.
      *
      * @return \Robo\Task\Base\Exec[]
@@ -112,9 +129,11 @@ class RoboFile extends \Robo\Tasks
             ->copy('.travis/docker-compose.yml', 'docker-compose.yml', $force)
             ->copy('.travis/traefik.yml', 'traefik.yml', $force)
             ->copy('.travis/.env', '.env', $force)
-            ->copy('.travis/config/settings.local.php',
-                'web/sites/default/settings.local.php', $force)
-            ->copy('.travis/config/behat.yml', 'tests/behat.yml', $force);
+            ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php', $force)
+            ->copy('.travis/config/behat.yml', 'tests/behat.yml', $force)
+            ->copy('.travis/config/cypress.json', 'cypress.json', $force)
+            ->copy('cypress/package.json', 'package.json', $force);
+        $tasks[] = $this->taskExec('sleep 30s');
 
         $tasks[] = $this->taskExec('docker-compose pull --parallel');
         $tasks[] = $this->taskExec('docker-compose up -d');
@@ -197,6 +216,23 @@ class RoboFile extends \Robo\Tasks
         $tasks = [];
         $tasks[] = $this->taskExecStack()
             ->exec('docker-compose exec -T php vendor/bin/behat --verbose -c tests/behat.yml');
+        return $tasks;
+    }
+
+    /**
+     * Runs Cypress tests.
+     *
+     * @return \Robo\Task\Base\Exec[]
+     *   An array of tasks.
+     */
+    protected function runCypressTests()
+    {
+        $force = true;
+        $tasks = [];
+        $tasks[] = $this->taskExecStack()
+            ->exec('docker-compose exec -T node npm install cypress --save-dev');
+        $tasks[] = $this->taskExecStack()
+            ->exec('docker-compose exec -T node npm $(npm bin)/cypress run --spec ./tests/cypress/*.js');
         return $tasks;
     }
 

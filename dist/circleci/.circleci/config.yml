@@ -12,13 +12,10 @@ copy_robo: &copy_robo
 defaults: &defaults
   docker:
     - image: juampynr/drupal8ci:latest
-
     - image: selenium/standalone-chrome-debug:3.7.1-beryllium
-
     - image: mariadb:10.3
       environment:
         MYSQL_ALLOW_EMPTY_PASSWORD: 1
-
   working_directory: /opt/drupal
 
 #Jobs
@@ -48,6 +45,26 @@ behat_tests: &behat_tests
         command: robo job:run-behat-tests
     - store_test_results:
         path: /opt/drupal/artifacts/behat
+    - store_artifacts:
+        path: /opt/drupal/artifacts
+
+## Job to run the update path and Cypress tests.
+cypress_tests: &cypress_tests
+  <<: *defaults
+  docker:
+    - image: juampynr/drupal9ci:latest
+    - image: selenium/standalone-chrome-debug:3.7.1-beryllium
+    - image: mariadb:10.3
+      environment:
+        MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  steps:
+    - checkout
+    - *copy_robo
+    - run:
+        name: Run Cypress tests
+        command: robo job:run-cypress-tests
+    - store_test_results:
+        path: /opt/drupal/artifacts/cypress
     - store_artifacts:
         path: /opt/drupal/artifacts
 
@@ -88,6 +105,8 @@ jobs:
      <<: *code_sniffer
   run-code-coverage:
      <<: *code_coverage
+  run-cypress-tests:
+     <<: *cypress_tests
 
 # Declare a workflow that runs all of our jobs in parallel.
 workflows:
@@ -98,3 +117,4 @@ workflows:
       - run-behat-tests
       - run-code-sniffer
       - run-code-coverage
+      - run-cypress-tests

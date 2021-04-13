@@ -77,3 +77,7 @@ services:
       - '4444:4444'
     volumes:
       - /dev/shm:/dev/shm
+
+  node:
+    image: wodby/node:latest
+    container_name: "${PROJECT_NAME}_node"

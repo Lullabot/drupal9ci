@@ -84,6 +84,23 @@ class RoboFile extends \Robo\Tasks
     }
 
     /**
+     * Command to run Cypress tests.
+     *
+     * @return \Robo\Result
+     *   The result tof the collection of tasks.
+     */
+    public function jobCypressTests()
+    {
+        $collection = $this->collectionBuilder();
+        $collection->addTask($this->installDependencies());
+        $collection->addTask($this->waitForDatabase());
+        $collection->addTaskList($this->importDatabase());
+        $collection->addTaskList($this->runUpdatePath());
+        $collection->addTaskList($this->runCypressTests());
+        return $collection->run();
+    }
+
+    /**
      * Imports and updates the database.
      *
      * This task assumes that there is an environment variable $DB_DUMP_URL
@@ -136,6 +153,26 @@ class RoboFile extends \Robo\Tasks
         $tasks[] = $this->taskFilesystemStack()
             ->copy('.circleci/config/behat.yml', 'tests/behat.yml', $force);
         $tasks[] = $this->taskExec('vendor/bin/behat --verbose -c tests/behat.yml');
+        return $tasks;
+    }
+
+    /**
+     * Runs Cypress tests.
+     *
+     * @return \Robo\Task\Base\Exec[]
+     *   An array of tasks.
+     */
+    protected function runCypressTests()
+    {
+        $force = true;
+        $tasks = [];
+        $tasks[] = $this->taskExec('service apache2 start');
+        $tasks[] = $this->taskFilesystemStack()
+            ->copy('cypress/cypress.json', 'cypress.json', $force)
+            ->copy('cypress/package.json', 'package.json', $force);
+        $tasks[] = $this->taskExec('sleep 30s');
+        $tasks[] = $this->taskExec('npm install cypress --save-dev');
+        $tasks[] = $this->taskExec('$(npm bin)/cypress run --spec ./tests/cypress/*.js');
         return $tasks;
     }
 

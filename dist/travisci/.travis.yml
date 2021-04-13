@@ -21,6 +21,7 @@ env:
     - JOB=job:check-coding-standards
     - JOB=job:run-unit-tests
     - JOB=job:run-behat-tests
+    - JOB=job:run-cypress-tests
 
 before_install:
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini

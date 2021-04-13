@@ -91,3 +91,18 @@ drupal9ci:behat:
   artifacts:
     paths:
       - artifacts
+
+## Job to run cypress.
+drupal9ci:cypress:
+  extends: .drupal9ci_test_template
+  image: juampynr/drupal9ci:latest
+  variables:
+    FOO: bar
+    # DB_DUMP_URL: "URL to your DB dump"
+  before_script:
+    - vendor/bin/robo job:serve-drupal
+  script:
+    - vendor/bin/robo job:cypress-tests
+  artifacts:
+    paths:
+      - artifacts

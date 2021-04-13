@@ -75,6 +75,19 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
+   * Command to run Cypress tests.
+   *
+   * @return \Robo\Result
+   *   The result tof the collection of tasks.
+   */
+  public function jobCypressTests()
+  {
+    $collection = $this->collectionBuilder();
+    $collection->addTaskList($this->runCypressTests());
+    return $collection->run();
+  }
+
+  /**
    * Serve Drupal.
    *
    * @return \Robo\Result
@@ -193,6 +206,25 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
+   * Runs Cypress tests.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function runCypressTests()
+  {
+    $force = true;
+    $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('cypress/cypress.json', 'cypress.json', $force)
+      ->copy('cypress/package.json', 'package.json', $force);
+    $tasks[] = $this->taskExec('sleep 30s');
+    $tasks[] = $this->taskExec('npm install cypress --save-dev');
+    $tasks[] = $this->taskExec('$(npm bin)/cypress run --spec ./tests/cypress/*.js');
+    return $tasks;
+  }
+
+  /**
    * Return drush with default arguments.
    *
    * @return \Robo\Task\Base\Exec
@@ -212,10 +244,8 @@ class RoboFile extends \Robo\Tasks {
     $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
-      ->copy('.gitlab-ci/settings.local.php',
-        'web/sites/default/settings.local.php', $force)
-      ->copy('.gitlab-ci/.env',
-        '.env', $force);
+      ->copy('.gitlab-ci/settings.local.php', 'web/sites/default/settings.local.php', $force)
+      ->copy('.gitlab-ci/.env', '.env', $force);
     return $tasks;
   }
 
