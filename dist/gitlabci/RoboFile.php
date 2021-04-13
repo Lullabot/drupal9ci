@@ -214,7 +214,7 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function runCypressTests()
   {
-    $force = true;
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('cypress/cypress.json', 'cypress.json', $force)
