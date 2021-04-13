@@ -132,7 +132,7 @@ class RoboFile extends \Robo\Tasks
             ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php', $force)
             ->copy('.travis/config/behat.yml', 'tests/behat.yml', $force)
             ->copy('.travis/config/cypress.json', 'cypress.json', $force)
-            ->copy('cypress/package.json', 'package.json', $force);
+            ->copy('.cypress/package.json', 'package.json', $force);
         $tasks[] = $this->taskExec('sleep 30s');
 
         $tasks[] = $this->taskExec('docker-compose pull --parallel');
