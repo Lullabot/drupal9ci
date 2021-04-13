@@ -49,10 +49,6 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-# Install ImageMagic to take screenshots.
-RUN pecl install imagick && \
-    docker-php-ext-enable imagick
-
 # Install Chrome browser.
 RUN apt-get install --yes gnupg2 apt-transport-https && \
     wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
