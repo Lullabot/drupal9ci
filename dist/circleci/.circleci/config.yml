@@ -12,7 +12,6 @@ copy_robo: &copy_robo
 defaults: &defaults
   docker:
     - image: juampynr/drupal8ci:latest
-    - image: selenium/standalone-chrome-debug:3.7.1-beryllium
     - image: mariadb:10.3
       environment:
         MYSQL_ALLOW_EMPTY_PASSWORD: 1
@@ -53,7 +52,6 @@ cypress_tests: &cypress_tests
   <<: *defaults
   docker:
     - image: juampynr/drupal9ci:latest
-    - image: selenium/standalone-chrome-debug:3.7.1-beryllium
     - image: mariadb:10.3
       environment:
         MYSQL_ALLOW_EMPTY_PASSWORD: 1

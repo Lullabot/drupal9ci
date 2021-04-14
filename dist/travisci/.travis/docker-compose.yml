@@ -71,13 +71,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  chrome:
-    image: selenium/standalone-chrome-debug:3.7.1-beryllium
-    ports:
-      - '4444:4444'
-    volumes:
-      - /dev/shm:/dev/shm
-
   node:
     image: wodby/node:latest
     container_name: "${PROJECT_NAME}_node"
