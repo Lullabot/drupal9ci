@@ -152,19 +152,22 @@ tests in a realistic environment you need:
 ##### 1. A recent copy of the production environment's database
 
 **Travis**
+
 If you have Drush site aliases, and your repository is private, then follow these
 instructions to [add an SSH key](https://docs.travis-ci.com/user/private-dependencies/#User-Key).
 Next, set up a drush site alias. Finally, adjust the Behat job to run `drush @my.alias sql-cli`.
 
 **CircleCI**
+
 If you have Drush site aliases, then at the CircleCI dashboard go to the project's permissions
 and add an SSH key. Next, add `drush @my.alias sql-cli` to the Behat job at `.circleci/config.yml`.
 
 **Alternative**
+
 Alternatively, upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
 dump somewhere and set up the `DB_DUMP_URL` environment variable so the job can download it.
 
-ie:
+For example:
 ![Travis CI db env var](docs/images/travisci-db-var.png)
 ![CircleCI database via environment variable](docs/images/circleci-db-env.png)
 
