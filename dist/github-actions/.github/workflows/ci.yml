@@ -130,6 +130,7 @@ jobs:
         run: |
           robo job:build
 
+      # juampynr/drupal9ci:latest lands with PHP8 and node, so if your project is PHP8 you can remove this step.
       - name: Setup node
         run: |
           curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
