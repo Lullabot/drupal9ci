@@ -12,6 +12,8 @@ copy_robo: &copy_robo
 defaults: &defaults
   docker:
     - image: juampynr/drupal8ci:latest
+      environment:
+        XDEBUG_MODE: coverage
     - image: mariadb:10.3
       environment:
         MYSQL_ALLOW_EMPTY_PASSWORD: 1
