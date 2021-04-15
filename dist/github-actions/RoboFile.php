@@ -183,7 +183,9 @@ class RoboFile extends \Robo\Tasks {
   function runServeDrupal()
   {
     $tasks = [];
-    $tasks[] = $this->taskExec('vendor/bin/drush serve 80 &');
+    $tasks[] = $this->taskExec('chown -R www-data:www-data ' . getenv('GITHUB_WORKSPACE'));
+    $tasks[] = $this->taskExec('ln -sf ' . getenv('GITHUB_WORKSPACE') . '/web /var/www/html');
+    $tasks[] = $this->taskExec('service apache2 start');
     return $tasks;
   }
 
