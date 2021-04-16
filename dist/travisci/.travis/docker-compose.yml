@@ -71,8 +71,15 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  node:
-    image: wodby/node:latest
+  cypress:
+    image: wodby/node:$NODE_TAG
     container_name: "${PROJECT_NAME}_node"
+    working_dir: /var/www/html
+    labels:
+    - "traefik.http.services.${PROJECT_NAME}_node.loadbalancer.server.port=3000"
+    - "traefik.http.routers.${PROJECT_NAME}_node.rule=Host(`node.${PROJECT_BASE_URL}`)"
+    expose:
+    - "3000"
     volumes:
-      - ./:/var/www/html
+    - ./:/var/www/html
+    command: tail -F web/index.php

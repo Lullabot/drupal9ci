@@ -19,11 +19,6 @@ class RoboFile extends \Robo\Tasks
     const DB_URL = 'sqlite://tmp/site.sqlite';
 
     /**
-     * The website's URL.
-     */
-    const DRUPAL_URL = 'http://drupal.docker.localhost:8000';
-
-    /**
      * RoboFile constructor.
      */
     public function __construct()
@@ -132,10 +127,9 @@ class RoboFile extends \Robo\Tasks
             ->copy('.travis/config/behat.yml', 'tests/behat.yml', $force)
             ->copy('.travis/config/cypress.json', 'cypress.json', $force)
             ->copy('.cypress/package.json', 'package.json', $force);
-        $tasks[] = $this->taskExec('sleep 30s');
-
         $tasks[] = $this->taskExec('docker-compose pull --parallel');
         $tasks[] = $this->taskExec('docker-compose up -d');
+        $tasks[] = $this->taskExec('docker-compose ps');
         return $tasks;
     }
 
@@ -227,10 +221,7 @@ class RoboFile extends \Robo\Tasks
     protected function runCypressTests()
     {
         $tasks = [];
-        $tasks[] = $this->taskExecStack()
-            ->exec('docker-compose exec -T node npm install cypress --save-dev');
-        $tasks[] = $this->taskExecStack()
-            ->exec('docker-compose exec -T node npm $(npm bin)/cypress run');
+        $tasks[] = $this->taskExec('docker-compose exec -T cypress npm install cypress --save-dev && $(npm bin)/cypress run');
         return $tasks;
     }
 
