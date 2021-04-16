@@ -74,3 +74,5 @@ services:
   node:
     image: wodby/node:latest
     container_name: "${PROJECT_NAME}_node"
+    volumes:
+      - ./:/var/www/html

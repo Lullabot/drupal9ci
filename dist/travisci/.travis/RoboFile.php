@@ -1,5 +1,4 @@
 <?php
-
 // @codingStandardsIgnoreStart
 use Robo\Exception\TaskException;
 
@@ -88,7 +87,7 @@ class RoboFile extends \Robo\Tasks
      * @return \Robo\Result
      *   The result tof the collection of tasks.
      */
-    public function jobCypressTests()
+    public function jobRunCypressTests()
     {
         $collection = $this->collectionBuilder();
         $collection->addTaskList($this->downloadDatabase());
