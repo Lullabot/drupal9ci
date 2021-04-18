@@ -53,11 +53,6 @@ behat_tests: &behat_tests
 # juampynr/drupal9ci:latest lands with PHP8 and node, so if your project is PHP8 you can remove the `Set up node` step.
 cypress_tests: &cypress_tests
   <<: *defaults
-  docker:
-    - image: juampynr/drupal9ci:latest
-    - image: mariadb:10.3
-      environment:
-        MYSQL_ALLOW_EMPTY_PASSWORD: 1
   steps:
     - checkout
     - *copy_robo
