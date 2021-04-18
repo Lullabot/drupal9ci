@@ -19,6 +19,16 @@ class RoboFile extends \Robo\Tasks
     const DB_URL = 'sqlite://tmp/site.sqlite';
 
     /**
+     * Base path where the web files will be.
+     */
+    const APACHE_PATH = '/var/html/www';
+
+    /**
+     * Mount path where the web files will be.
+     */
+    const MOUNT_PATH = '/opt/drupal';
+
+    /**
      * RoboFile constructor.
      */
     public function __construct()
@@ -68,9 +78,10 @@ class RoboFile extends \Robo\Tasks
     public function jobRunBehatTests()
     {
         $collection = $this->collectionBuilder();
-        $collection->addTaskList($this->downloadDatabase());
         $collection->addTaskList($this->buildEnvironment());
+        $collection->addTaskList($this->serveDrupal());
         $collection->addTask($this->waitForDrupal());
+        $collection->addTaskList($this->importDatabase());
         $collection->addTaskList($this->runUpdatePath());
         $collection->addTaskList($this->runBehatTests());
         return $collection->run();
@@ -85,28 +96,13 @@ class RoboFile extends \Robo\Tasks
     public function jobRunCypressTests()
     {
         $collection = $this->collectionBuilder();
-        $collection->addTaskList($this->downloadDatabase());
         $collection->addTaskList($this->buildEnvironment());
+        $collection->addTaskList($this->serveDrupal());
         $collection->addTask($this->waitForDrupal());
+        $collection->addTaskList($this->importDatabase());
         $collection->addTaskList($this->runUpdatePath());
         $collection->addTaskList($this->runCypressTests());
         return $collection->run();
-    }
-
-    /**
-     * Download's database to use within a Docker environment.
-     *
-     * @return \Robo\Task\Base\Exec[]
-     *   An array of tasks.
-     */
-    protected function downloadDatabase()
-    {
-        $tasks = [];
-        $tasks[] = $this->taskFilesystemStack()
-            ->mkdir('mariadb-init');
-        $tasks[] = $this->taskExec('wget "' . getenv('DB_DUMP_URL') . '"')
-            ->dir('mariadb-init');
-        return $tasks;
     }
 
     /**
@@ -121,15 +117,13 @@ class RoboFile extends \Robo\Tasks
         $tasks = [];
         $tasks[] = $this->taskFilesystemStack()
             ->copy('.travis/docker-compose.yml', 'docker-compose.yml', $force)
-            ->copy('.travis/traefik.yml', 'traefik.yml', $force)
-            ->copy('.travis/.env', '.env', $force)
+            ->copy('.travis/php-node.dockerfile', 'php-node.dockerfile', $force)
             ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php', $force)
             ->copy('.travis/config/behat.yml', 'tests/behat.yml', $force)
-            ->copy('.travis/config/cypress.json', 'cypress.json', $force)
+            ->copy('.cypress/cypress.json', 'cypress.json', $force)
             ->copy('.cypress/package.json', 'package.json', $force);
-        $tasks[] = $this->taskExec('docker-compose pull --parallel');
+        $tasks[] = $this->taskExec('docker-compose pull');
         $tasks[] = $this->taskExec('docker-compose up -d');
-        $tasks[] = $this->taskExec('docker-compose ps');
         return $tasks;
     }
 
@@ -158,9 +152,56 @@ class RoboFile extends \Robo\Tasks
     protected function runUpdatePath()
     {
         $tasks = [];
-        $tasks[] = $this->taskExec('docker-compose exec -T php vendor/bin/drush --yes updatedb');
-        $tasks[] = $this->taskExec('docker-compose exec -T php vendor/bin/drush --yes config-import');
-        $tasks[] = $this->taskExec('docker-compose exec -T php vendor/bin/drush cr');
+        $tasks[] = $this->taskDockerComposeExec('vendor/bin/drush --yes updatedb');
+        $tasks[] = $this->taskDockerComposeExec('vendor/bin/drush --yes config-import');
+        $tasks[] = $this->taskDockerComposeExec('vendor/bin/drush cr');
+        return $tasks;
+    }
+
+    /**
+     * Run docker-compose task on php container.
+     */
+    protected function taskDockerComposeExec($command, $mount_path = TRUE) {
+        $command = ($mount_path) ?
+            "cd " . static::MOUNT_PATH . " && {$command}" :
+            $command;
+        return $this->taskExec("docker-compose exec -T php bash -c '{$command}'");
+    }
+
+    /**
+     * Serves Drupal.
+     *
+     * @return \Robo\Task\Base\Exec[]
+     *   An array of tasks.
+     */
+    protected function serveDrupal()
+    {
+        $tasks = [];
+        $tasks[] = $this->taskDockerComposeExec('rm -rf ' . static::APACHE_PATH);
+        $tasks[] = $this->taskDockerComposeExec('mkdir -p ' . dirname(static::APACHE_PATH));
+        $tasks[] = $this->taskDockerComposeExec('chown -R www-data:www-data ' . static::MOUNT_PATH);
+        $tasks[] = $this->taskDockerComposeExec('ln -sf ' . static::MOUNT_PATH . '/web ' . static::APACHE_PATH);
+        $tasks[] = $this->taskDockerComposeExec('service apache2 start');
+        return $tasks;
+    }
+
+    /**
+     * Imports and updates the database.
+     *
+     * This task assumes that there is an environment variable $DB_DUMP_URL
+     * that contains a URL to a database dump. Ideally, you should set up drush
+     * site aliases and then replace this task by a drush sql-sync one. See the
+     * README at lullabot/drupal9ci for further details.
+     *
+     * @return \Robo\Task\Base\Exec[]
+     *   An array of tasks.
+     */
+    protected function importDatabase()
+    {
+        $tasks = [];
+        $tasks[] = $this->taskDockerComposeExec('mysql -u root -h mariadb -e "create database if not exists drupal"');
+        $tasks[] = $this->taskDockerComposeExec('wget -O /tmp/dump.sql "' . getenv('DB_DUMP_URL') . '"');
+        $tasks[] = $this->taskDockerComposeExec('vendor/bin/drush sql-cli < /tmp/dump.sql');
         return $tasks;
     }
 
@@ -207,8 +248,7 @@ class RoboFile extends \Robo\Tasks
     protected function runBehatTests()
     {
         $tasks = [];
-        $tasks[] = $this->taskExecStack()
-            ->exec('docker-compose exec -T php vendor/bin/behat --verbose -c tests/behat.yml');
+        $tasks[] = $this->taskDockerComposeExec('vendor/bin/behat --verbose -c tests/behat.yml');
         return $tasks;
     }
 
@@ -221,7 +261,8 @@ class RoboFile extends \Robo\Tasks
     protected function runCypressTests()
     {
         $tasks = [];
-        $tasks[] = $this->taskExec('docker-compose exec -T cypress npm install cypress --save-dev && $(npm bin)/cypress run');
+        $tasks[] = $this->taskDockerComposeExec('npm install cypress --save-dev --unsafe-perm');
+        $tasks[] = $this->taskDockerComposeExec('$(npm bin)/cypress run');
         return $tasks;
     }
 

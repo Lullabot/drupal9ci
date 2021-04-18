@@ -9,14 +9,14 @@ default:
   extensions:
     Behat\MinkExtension:
       goutte: ~
-      base_url: http://apache
+      base_url: http://localhost
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: 'drupal'
       drush:
         alias: 'local'
       drupal:
-        drupal_root: '/var/www/html/web'
+        drupal_root: '/var/www/html'
       region_map:
         footer: "#footer"
       selectors:
