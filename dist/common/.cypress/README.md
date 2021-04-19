@@ -9,3 +9,6 @@ root of the repo (if you don't have one already) and just run locally
 `cypress.json` is set up to work with the CI integration. If you want to
 test locally, copy this file to the root of the repo and tweak any of the
 values if needed (ie: `baseUrl`).
+
+Once everything is set up locally, you can run the tests like this:
+`$(npm bin)/cypress open` or `$(npm bin)/cypress run`.
