@@ -67,28 +67,7 @@ the [official Drupal image](https://hub.docker.com/_/drupal/) and it is [hosted 
 Docker Hub](https://hub.docker.com/r/juampynr/drupal8ci/). If this image
 does not fit your project's architecture then consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
 based out of it.
-   
-#### Setting up the update path
 
-The Behat job requires a running Drupal 9 site. The repository contains the code, but for running
-tests in a realistic environment you need:
-
-##### 1. A recent copy of the production environment's database
-
-If you have Drush site aliases, then at the CircleCI dashboard go to the project's permissions
-and add an SSH key. Next, add `drush @my.alias sql-cli` to the Behat job at `.circleci/config.yml`.
-
-Alternatively, upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
-dump somewhere. For example [the demo project uses a Dropbox URL](https://github.com/juampynr/drupal8-circleci/blob/master/.circleci/config.yml#L83)
-via an environment variable which is set at the Circle CI web interface like in the following
-screenshot:
-
-![CircleCI database via environment variable](docs/images/circleci-db-env.png)
-
-##### 2. The production environment's files directory
-
-If you have a site alias, then add `drush rsync @my.alias @self` to the Behat job. Alternatively,
-use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 ### [Travis CI](https://travis-ci.org)
 
@@ -133,27 +112,6 @@ at the pull request's status message:
 
 ![Coveralls report](docs/images/coveralls-report.png)
 
-#### Setting up the Behat job
-
-The Behat job requires, in order to test the behavior of your project:
-
-##### 1. A recent copy of the production environment's database
-
-If you have Drush site aliases, and your repository is private, then follow these
-instructions to [add an SSH key](https://docs.travis-ci.com/user/private-dependencies/#User-Key).
-Next, set up a drush site alias. Finally, adjust the Behat job to run `drush @my.alias sql-cli`.
-
-Alternatively, upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
-dump somewhere and set up the environment variable so the job can download it. For example
-[the demo project uses a Dropbox URL](https://github.com/juampynr/drupal8-travis-ci/blob/master/.travis/RoboFile.php#L89)
-via an environment variable referenced below:
-
-![Travis CI db env var](docs/images/travisci-db-var.png)
-
-##### 2. The production environment's files directory
-
-If you have a site alias, then add `drush rsync @my.alias @self` to the Behat job. Alternatively,
-use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.
 
 ### [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/)
 
@@ -170,11 +128,6 @@ the following one:
 
 ![GitLab pipeline](docs/images/gitlab-pipeline.png)
 
-#### Database setup
-In order to build a Docker image with your project's database. Run the one-line installer mentioned
-above and then follow the instructions at the resulting [scripts/database](dist/gitlabci/scripts/database)
-directory in your local environment.
-
 
 ### [GitHub Actions](https://github.com/features/actions)
 
@@ -190,7 +143,35 @@ at GitHub and open the Actions tab. You should see a running workflow like the f
 
 ![GitLab pipeline](docs/images/github-actions.png)
 
-#### Database setup
-In order to build a Docker image with your project's database. Run the one-line installer mentioned
-above and then follow the instructions at the resulting [scripts/database](dist/github-actions/scripts/database)
-directory in your local environment.
+
+### Setting up the Behat and Cypress jobs for all platforms
+
+The Behat and Cypress jobs require a running Drupal 9 site. The repository contains the code, but for running
+tests in a realistic environment you need:
+
+##### 1. A recent copy of the production environment's database
+
+**Travis**
+
+If you have Drush site aliases, and your repository is private, then follow these
+instructions to [add an SSH key](https://docs.travis-ci.com/user/private-dependencies/#User-Key).
+Next, set up a drush site alias. Finally, adjust the Behat job to run `drush @my.alias sql-cli`.
+
+**CircleCI**
+
+If you have Drush site aliases, then at the CircleCI dashboard go to the project's permissions
+and add an SSH key. Next, add `drush @my.alias sql-cli` to the Behat job at `.circleci/config.yml`.
+
+**Alternative**
+
+Alternatively, upload a [sanitized](https://drushcommands.com/drush-8x/sql/sql-sanitize/) database
+dump somewhere and set up the `DB_DUMP_URL` environment variable so the job can download it.
+
+For example:
+![Travis CI db env var](docs/images/travisci-db-var.png)
+![CircleCI database via environment variable](docs/images/circleci-db-env.png)
+
+##### 2. The production environment's files directory
+
+If you have a site alias, then add `drush rsync @my.alias @self` to the Behat job. Alternatively,
+use [Stage File Proxy](https://www.drupal.org/project/stage_file_proxy) module.

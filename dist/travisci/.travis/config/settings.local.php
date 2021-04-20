@@ -2,8 +2,8 @@
 
 $databases['default']['default'] = array (
   'database' => 'drupal',
-  'username' => 'drupal',
-  'password' => 'drupal',
+  'username' => 'root',
+  'password' => '',
   'prefix' => '',
   'host' => 'mariadb',
   'port' => '',

@@ -9,22 +9,14 @@ default:
   extensions:
     Behat\MinkExtension:
       goutte: ~
-      selenium2: ~
-      base_url: http://apache
-      sessions:
-        default:
-          goutte: ~
-        javascript:
-          selenium2:
-            browser: chrome
-            wd_host: http://chrome:4444/wd/hub
+      base_url: http://localhost
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: 'drupal'
       drush:
         alias: 'local'
       drupal:
-        drupal_root: '/var/www/html/web'
+        drupal_root: '/var/www/html'
       region_map:
         footer: "#footer"
       selectors:

@@ -1,0 +1,7 @@
+{
+  "baseUrl": "http://localhost",
+  "integrationFolder": "tests/cypress",
+  "env": {
+    "FOO": "bar"
+  }
+}

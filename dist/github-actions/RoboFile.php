@@ -1,5 +1,4 @@
 <?php
-
 // @codingStandardsIgnoreStart
 
 /**
@@ -75,6 +74,19 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
+   * Command to run Cypress tests.
+   *
+   * @return \Robo\Result
+   *   The result tof the collection of tasks.
+   */
+  public function jobCypressTests()
+  {
+    $collection = $this->collectionBuilder();
+    $collection->addTaskList($this->runCypressTests());
+    return $collection->run();
+  }
+
+  /**
    * Serve Drupal.
    *
    * @return \Robo\Result
@@ -117,6 +129,7 @@ class RoboFile extends \Robo\Tasks {
    *   An array of tasks.
    */
   protected function runUnitTests() {
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.github/config/phpunit.xml', 'web/core/phpunit.xml', $force);
@@ -133,6 +146,7 @@ class RoboFile extends \Robo\Tasks {
    *   An array of tasks.
    */
   protected function runCoverageReport() {
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.github/config/phpunit.xml', 'web/core/phpunit.xml', $force);
@@ -169,7 +183,9 @@ class RoboFile extends \Robo\Tasks {
   function runServeDrupal()
   {
     $tasks = [];
-    $tasks[] = $this->taskExec('vendor/bin/drush serve 80 &');
+    $tasks[] = $this->taskExec('chown -R www-data:www-data ' . getenv('GITHUB_WORKSPACE'));
+    $tasks[] = $this->taskExec('ln -sf ' . getenv('GITHUB_WORKSPACE') . '/web /var/www/html');
+    $tasks[] = $this->taskExec('service apache2 start');
     return $tasks;
   }
 
@@ -181,12 +197,31 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function runBehatTests()
   {
-    $force = true;
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.github/config/behat.yml', 'tests/behat.yml', $force);
     $tasks[] = $this->taskExec('sleep 30s');
     $tasks[] = $this->taskExec('vendor/bin/behat --verbose -c tests/behat.yml');
+    return $tasks;
+  }
+
+  /**
+   * Runs Cypress tests.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function runCypressTests()
+  {
+    $force = TRUE;
+    $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.cypress/cypress.json', 'cypress.json', $force)
+      ->copy('.cypress/package.json', 'package.json', $force);
+    $tasks[] = $this->taskExec('sleep 30s');
+    $tasks[] = $this->taskExec('npm install cypress --save-dev');
+    $tasks[] = $this->taskExec('$(npm bin)/cypress run');
     return $tasks;
   }
 
@@ -210,10 +245,8 @@ class RoboFile extends \Robo\Tasks {
     $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
-      ->copy('.github/config/settings.local.php',
-        'web/sites/default/settings.local.php', $force)
-      ->copy('.github/config/.env',
-        '.env', $force);
+      ->copy('.github/config/settings.local.php', 'web/sites/default/settings.local.php', $force)
+      ->copy('.github/config/.env', '.env', $force);
     return $tasks;
   }
 
@@ -261,7 +294,7 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function importDatabase()
   {
-    $force = true;
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskExec('mysql -u root -proot -h mariadb -e "create database drupal"');
     $tasks[] = $this->taskFilesystemStack()
