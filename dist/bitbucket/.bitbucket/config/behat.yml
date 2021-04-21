@@ -19,6 +19,7 @@ default:
         # Copy install path from Bitbucket pipeline.
         # There is a `drush st` that will give you that information.
         # This is also obtained via: `getenv('BITBUCKET_CLONE_DIR')/web`
+        # ie: /opt/atlassian/pipelines/agent/build/web
         drupal_root: 'CHANGE-THIS'
       region_map:
         footer: "#footer"
