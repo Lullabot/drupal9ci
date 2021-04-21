@@ -1,0 +1,33 @@
+image: juampynr/drupal8ci:latest
+
+pipelines:
+  default:
+    - parallel:
+        - step:
+            name: Coding Standards
+            script:
+              - robo job:build
+              - vendor/bin/robo job:coding-standards
+        - step:
+            name: Unit test
+            services:
+              - mariadb
+            script:
+              - sleep 10
+              - robo job:build
+              - vendor/bin/robo job:unit-tests
+        - step:
+            name: Code coverage
+            services:
+              - mariadb
+            script:
+              - sleep 10
+              - robo job:build
+              - vendor/bin/robo job:coverage-report
+
+definitions:
+  services:
+    mariadb:
+      image: mariadb:latest
+      variables:
+        MYSQL_ROOT_PASSWORD: root
