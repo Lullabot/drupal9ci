@@ -1,0 +1,67 @@
+image: juampynr/drupal8ci:latest
+
+pipelines:
+  default:
+    - parallel:
+        - step:
+            name: Coding Standards
+            script:
+              - robo job:build
+              - vendor/bin/robo job:coding-standards
+        - step:
+            name: Unit test
+            services:
+              - mariadb
+            script:
+              - sleep 10
+              - robo job:build
+              - vendor/bin/robo job:unit-tests
+        - step:
+            name: Code coverage
+            services:
+              - mariadb
+            script:
+              - sleep 10
+              - robo job:build
+              - vendor/bin/robo job:coverage-report
+        - step:
+            name: Behat
+            services:
+              - mariadb
+            script:
+              - echo $DB_DUMP_URL
+              - sleep 10
+              - robo job:build
+              - vendor/bin/robo job:serve-drupal
+              - vendor/bin/robo job:behat-tests
+            variables:
+              # NOTE: environment variables doesn't work on Bitbucket via the config file.
+              # Navigate to "Repository settings > Pipelines > Repository variables"
+              # and add DB_DUMP_URL to the URL of your DB dump.
+              FOO: bar
+        - step:
+            name: CypressIO
+            services:
+              - mariadb
+            script:
+              - echo $DB_DUMP_URL
+              - sleep 10
+              - robo job:build
+              # The following two lines add node/npm to the juampynr/drupal8ci image.
+              # They are not needed if you use juampynr/drupal9ci (PHP8).
+              - curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+              - apt install -y nodejs xvfb libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
+              - vendor/bin/robo job:serve-drupal
+              - vendor/bin/robo job:cypress-tests
+            variables:
+              # NOTE: environment variables doesn't work on Bitbucket via the config file.
+              # Navigate to "Repository settings > Pipelines > Repository variables"
+              # and add DB_DUMP_URL to the URL of your DB dump.
+              FOO: bar
+
+definitions:
+  services:
+    mariadb:
+      image: mariadb:latest
+      variables:
+        MYSQL_ROOT_PASSWORD: root

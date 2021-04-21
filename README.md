@@ -9,6 +9,7 @@ project using any of the following CI providers:
  * [Travis CI](#travis-ci)
  * [GitLab CI](#gitlab-ci)
  * [GitHub Actions](#github-actions)
+ * [Bitbucket Pipelines](#bitbucket)
 
 To install, simply run the respective installer and allow the CI provider that you chose to watch repository changes
 to start building on every pull request.
@@ -141,7 +142,20 @@ curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-github-actions.sh
 Review, commit, and push the resulting changes. After doing that, navigate to the repository's homepage
 at GitHub and open the Actions tab. You should see a running workflow like the following one:
 
-![GitLab pipeline](docs/images/github-actions.png)
+![Github actions](docs/images/github-actions.png)
+
+
+### [Bitbucket](https://support.atlassian.com/bitbucket-cloud/docs/get-started-with-bitbucket-pipelines)
+
+Open a terminal and run the installer from the root of your project:
+```bash
+curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-bitbucket.sh | bash
+```
+
+Review, commit, and push the resulting changes. After doing that, navigate to the repository's homepage
+at Bitbucket and open the Pipelines tab. You should see a running workflow like the following one:
+
+![Bitbucket pipelines](docs/images/bitbucket.png)
 
 
 ### Setting up the Behat and Cypress jobs for all platforms
