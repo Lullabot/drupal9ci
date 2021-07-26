@@ -32,12 +32,12 @@ commit](https://github.com/juampynr/drupal8-circleci/commit/817d0b6674c42dba7316
 which contains these changes among other ones. The CI scripts have their own `settings.local.php`
 which is copied at build time into `web/sites/default`.
 
-### DocumentRoot: web vs docroot
+#### DocumentRoot: web vs docroot
 
 By default Apache and the rest of the code is set up to have the `DocumentRoot` folder as `web`. If
 your project uses `docroot` instead, the easiest thing to do is to symlink one to the other. This can be
 done adding a line like [this one](https://github.com/Lullabot/drupal9ci/blob/master/dist/bitbucket/RoboFile.php#L187)
-before running Apache (you will need to adapts paths).
+before running Apache (you will need to adapt paths).
 
 Otherwise you can go through the files and replace as needed. You can see a list of affected files in
 [this comment](https://github.com/Lullabot/drupal9ci/issues/74#issuecomment-884238645).
