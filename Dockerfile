@@ -1,4 +1,4 @@
-FROM drupal:8.9-apache
+FROM drupal:9.2-php7.4-apache
 
 RUN apt-get update && apt-get install -y \
   git \
