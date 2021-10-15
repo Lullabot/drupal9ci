@@ -19,6 +19,24 @@ defaults: &defaults
         MYSQL_ALLOW_EMPTY_PASSWORD: 1
   working_directory: /opt/drupal
 
+## Defines the cache restoring mechanism.
+restore_cache: &restore_cache
+  # We use the composer.lock as a way to determine if we can cache our build.
+  keys:
+  - v2-dependencies-{{ checksum "composer.lock" }}
+  # fallback to using the latest cache if no exact match is found
+  - v2-dependencies-
+
+## Defines the cache saving mechanism.
+save_cache: &save_cache
+  paths:
+    - ./vendor
+    - ./web/core
+    - ./web/modules/contrib
+    - ./web/themes/contrib
+    - ./web/profiles/contrib
+  key: v2-dependencies-{{ checksum "composer.lock" }}
+
 #Jobs
 
 ## Job to run Unit and Kernel tests.
@@ -27,6 +45,7 @@ unit_kernel_tests: &unit_kernel_tests
   steps:
     - checkout
     - *copy_robo
+    - restore_cache: *restore_cache
     - run:
         name: Run PHPUnit tests
         command: robo job:run-unit-tests
@@ -34,6 +53,7 @@ unit_kernel_tests: &unit_kernel_tests
         path: /opt/drupal/artifacts/phpunit
     - store_artifacts:
         path: /opt/drupal/artifacts
+    - save_cache: *save_cache
 
 ## Job to run the update path and Behat tests.
 behat_tests: &behat_tests
@@ -41,6 +61,7 @@ behat_tests: &behat_tests
   steps:
     - checkout
     - *copy_robo
+    - restore_cache: *restore_cache
     - run:
         name: Run Behat tests
         command: robo job:run-behat-tests
@@ -48,6 +69,7 @@ behat_tests: &behat_tests
         path: /opt/drupal/artifacts/behat
     - store_artifacts:
         path: /opt/drupal/artifacts
+    - save_cache: *save_cache
 
 ## Job to run the update path and Cypress tests.
 # juampynr/drupal9ci:latest lands with PHP8 and node, so if your project is PHP8 you can remove the `Set up node` step.
@@ -56,6 +78,7 @@ cypress_tests: &cypress_tests
   steps:
     - checkout
     - *copy_robo
+    - restore_cache: *restore_cache
     - run:
         name: Setup node
         command: |
@@ -68,6 +91,7 @@ cypress_tests: &cypress_tests
         path: /opt/drupal/artifacts/cypress
     - store_artifacts:
         path: /opt/drupal/artifacts
+    - save_cache: *save_cache
 
 ## Job to check coding standards.
 code_sniffer: &code_sniffer
@@ -75,6 +99,7 @@ code_sniffer: &code_sniffer
   steps:
     - checkout
     - *copy_robo
+    - restore_cache: *restore_cache
     - run:
         name: Inspect coding standards
         command: robo job:check-coding-standards
@@ -82,6 +107,7 @@ code_sniffer: &code_sniffer
         path: /opt/drupal/artifacts/phpcs
     - store_artifacts:
         path: /opt/drupal/artifacts
+    - save_cache: *save_cache
 
 ## Job to check test coverage.
 code_coverage: &code_coverage
@@ -89,11 +115,13 @@ code_coverage: &code_coverage
   steps:
     - checkout
     - *copy_robo
+    - restore_cache: *restore_cache
     - run:
         name: Generate code coverage report
         command: robo job:generate-coverage-report
     - store_artifacts:
         path: /opt/drupal/artifacts
+    - save_cache: *save_cache
 
 # Declare all of the jobs we should run.
 version: 2
