@@ -25,9 +25,10 @@ drupal9ci_install() {
 	rsync -va --ignore-existing "$tmpdir/drupal9ci-master/dist/common/" .
 
 	# Add development dependencies to run the Travis CI jobs.
+	composer self-update --2
 	COMPOSER_MEMORY_LIMIT=-1 composer require --dev	\
 		drupal/core-dev \
-		drupal/drupal-extension --with-dependencies
+		drupal/drupal-extension -W
 }
 
 #######################################
