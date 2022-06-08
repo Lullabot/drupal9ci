@@ -8,6 +8,11 @@ copy_robo: &copy_robo
     name: Copy RoboFile.php
     command: cp .circleci/RoboFile.php .
 
+update_composer: &update_composer
+  run:
+    name: Update composer to version 2
+    command: composer global remove hirak/prestissimo && composer self-update --2
+
 ## Defines images and working directory.
 defaults: &defaults
   docker:
@@ -45,6 +50,7 @@ unit_kernel_tests: &unit_kernel_tests
   steps:
     - checkout
     - *copy_robo
+    - *update_composer
     - restore_cache: *restore_cache
     - run:
         name: Run PHPUnit tests
@@ -61,6 +67,7 @@ behat_tests: &behat_tests
   steps:
     - checkout
     - *copy_robo
+    - *update_composer
     - restore_cache: *restore_cache
     - run:
         name: Run Behat tests
@@ -78,6 +85,7 @@ cypress_tests: &cypress_tests
   steps:
     - checkout
     - *copy_robo
+    - *update_composer
     - restore_cache: *restore_cache
     - run:
         name: Setup node
@@ -99,6 +107,7 @@ code_sniffer: &code_sniffer
   steps:
     - checkout
     - *copy_robo
+    - *update_composer
     - restore_cache: *restore_cache
     - run:
         name: Inspect coding standards
@@ -115,6 +124,7 @@ code_coverage: &code_coverage
   steps:
     - checkout
     - *copy_robo
+    - *update_composer
     - restore_cache: *restore_cache
     - run:
         name: Generate code coverage report
