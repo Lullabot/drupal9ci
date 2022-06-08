@@ -27,7 +27,7 @@ drupal9ci_install() {
 	# Add development dependencies to run the GitLab CI jobs.
 	COMPOSER_MEMORY_LIMIT=-1 composer require --dev	\
 		drupal/core-dev \
-		drupal/drupal-extension
+		drupal/drupal-extension -W
 }
 
 #######################################
