@@ -25,6 +25,7 @@ drupal9ci_install() {
 	rsync -va --ignore-existing "$tmpdir/drupal9ci-master/dist/common/" .
 
 	# Add development dependencies to run the Travis CI jobs.
+	composer global remove hirak/prestissimo
 	composer self-update --2
 	COMPOSER_MEMORY_LIMIT=-1 composer require --dev	\
 		drupal/core-dev \
