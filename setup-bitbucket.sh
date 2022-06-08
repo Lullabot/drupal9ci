@@ -27,7 +27,7 @@ drupal9ci_install() {
 	# Add development dependencies to run the jobs.
 	COMPOSER_MEMORY_LIMIT=-1 composer require --dev	\
 		drupal/core-dev \
-		drupal/drupal-extension -W
+		drupal/drupal-extension --with-dependencies
 }
 
 #######################################
