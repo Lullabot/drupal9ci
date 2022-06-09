@@ -26,7 +26,6 @@ before_install:
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 install:
-  - composer global remove hirak/prestissimo
   - composer self-update --2
   - composer --verbose install
 
