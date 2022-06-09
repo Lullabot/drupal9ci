@@ -148,7 +148,7 @@ class RoboFile extends \Robo\Tasks
     {
         $force = TRUE;
         $tasks = [];
-        $tasks[] = $this->taskExec('chown -R www-data:www-data /opt/drupal/web');
+        $tasks[] = $this->taskExec('chown -R www-data:www-data /opt/drupal');
         $tasks[] = $this->taskExec('ln -sf /opt/drupal/web /var/www/html');
         $tasks[] = $this->taskExec('echo "\nServerName localhost" >> /etc/apache2/apache2.conf');
         $tasks[] = $this->taskExec('service apache2 start');
@@ -168,7 +168,7 @@ class RoboFile extends \Robo\Tasks
     {
         $force = TRUE;
         $tasks = [];
-        $tasks[] = $this->taskExec('chown -R www-data:www-data /opt/drupal/web');
+        $tasks[] = $this->taskExec('chown -R www-data:www-data /opt/drupal');
         $tasks[] = $this->taskExec('ln -sf /opt/drupal/web /var/www/html');
         $tasks[] = $this->taskExec('echo "\nServerName localhost" >> /etc/apache2/apache2.conf');
         $tasks[] = $this->taskExec('service apache2 start');
