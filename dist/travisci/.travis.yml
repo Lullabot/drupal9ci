@@ -14,7 +14,7 @@ php:
 
 env:
   global:
-    - XDEBUG_MODE=coverage
+    - XDEBUG_MODE=off
     # - DB_DUMP_URL="Add it here or in the Travis settings"
   matrix:
     - JOB=job:check-coding-standards
