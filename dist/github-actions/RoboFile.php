@@ -185,6 +185,7 @@ class RoboFile extends \Robo\Tasks {
     $tasks = [];
     $tasks[] = $this->taskExec('chown -R www-data:www-data ' . getenv('GITHUB_WORKSPACE'));
     $tasks[] = $this->taskExec('ln -sf ' . getenv('GITHUB_WORKSPACE') . '/web /var/www/html');
+    $tasks[] = $this->taskExec('echo "\nServerName localhost" >> /etc/apache2/apache2.conf');
     $tasks[] = $this->taskExec('service apache2 start');
     return $tasks;
   }
@@ -220,7 +221,7 @@ class RoboFile extends \Robo\Tasks {
       ->copy('.cypress/cypress.json', 'cypress.json', $force)
       ->copy('.cypress/package.json', 'package.json', $force);
     $tasks[] = $this->taskExec('sleep 30s');
-    $tasks[] = $this->taskExec('npm install cypress --save-dev');
+    $tasks[] = $this->taskExec('npm install cypress@9 --save-dev');
     $tasks[] = $this->taskExec('$(npm bin)/cypress run');
     return $tasks;
   }

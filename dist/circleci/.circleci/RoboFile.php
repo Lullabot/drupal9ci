@@ -148,6 +148,9 @@ class RoboFile extends \Robo\Tasks
     {
         $force = TRUE;
         $tasks = [];
+        $tasks[] = $this->taskExec('chown -R www-data:www-data /opt/drupal/web');
+        $tasks[] = $this->taskExec('ln -sf /opt/drupal/web /var/www/html');
+        $tasks[] = $this->taskExec('echo "\nServerName localhost" >> /etc/apache2/apache2.conf');
         $tasks[] = $this->taskExec('service apache2 start');
         $tasks[] = $this->taskFilesystemStack()
             ->copy('.circleci/config/behat.yml', 'tests/behat.yml', $force);
@@ -165,12 +168,15 @@ class RoboFile extends \Robo\Tasks
     {
         $force = TRUE;
         $tasks = [];
+        $tasks[] = $this->taskExec('chown -R www-data:www-data /opt/drupal/web');
+        $tasks[] = $this->taskExec('ln -sf /opt/drupal/web /var/www/html');
+        $tasks[] = $this->taskExec('echo "\nServerName localhost" >> /etc/apache2/apache2.conf');
         $tasks[] = $this->taskExec('service apache2 start');
         $tasks[] = $this->taskFilesystemStack()
             ->copy('.cypress/cypress.json', 'cypress.json', $force)
             ->copy('.cypress/package.json', 'package.json', $force);
         $tasks[] = $this->taskExec('sleep 30s');
-        $tasks[] = $this->taskExec('npm install cypress --save-dev');
+        $tasks[] = $this->taskExec('npm install cypress@9 --save-dev');
         $tasks[] = $this->taskExec('$(npm bin)/cypress run');
         return $tasks;
     }
