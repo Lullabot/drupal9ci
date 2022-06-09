@@ -34,6 +34,7 @@ install:
 
 before_script:
   - cp .travis/RoboFile.php .
+  - phpenv config-rm xdebug.ini
 
 script:
   - vendor/bin/robo $JOB
