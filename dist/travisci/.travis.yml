@@ -34,6 +34,7 @@ install:
 
 before_script:
   - cp .travis/RoboFile.php .
+  - echo "xdebug.max_nesting_level=9999" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
   - vendor/bin/robo $JOB
