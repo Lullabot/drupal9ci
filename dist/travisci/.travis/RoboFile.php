@@ -235,7 +235,7 @@ class RoboFile extends \Robo\Tasks
             ->copy('.travis/config/phpunit.xml', 'web/core/phpunit.xml', $force);
         $tasks[] = $this->taskExecStack()
             ->dir('web')
-            ->exec('../vendor/bin/phpunit -c core --debug --coverage-clover ../build/logs/clover.xml --verbose modules/custom');
+            ->exec('../vendor/bin/phpunit -c core --verbose modules/custom');
         return $tasks;
     }
 

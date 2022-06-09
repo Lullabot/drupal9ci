@@ -15,22 +15,43 @@ class ExampleTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [];
+  public static $modules = ['block', 'system', 'user'];
 
   /**
    * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
-    // Mock required services here.
+    $this->container
+      ->get('entity_type.manager')
+      ->getStorage('block')
+      ->create([
+        'id' => 'test_block',
+        'theme' => 'stark',
+        'plugin' => 'system_powered_by_block',
+      ])
+      ->save();
   }
 
   /**
    * Test callback.
    */
-  public function testNetwork() {
-    $test_variable = "Not Empty";
-    $this->assertNotEmpty($test_variable, "This variable shouldn't be empty.");
+  public function testBlockRendering() {
+    $entity = Block::load('test_block');
+
+    $build = \Drupal::entityTypeManager()
+      ->getViewBuilder($entity->getEntityTypeId())
+      ->view($entity);
+
+    $content = $this
+      ->container
+      ->get('renderer')
+      ->renderRoot($build);
+
+    $this->assertTrue(
+      strpos(strip_tags($content), 'Powered by Drupal') !== FALSE,
+      'Valid block content was found.'
+    );
   }
 
 }
