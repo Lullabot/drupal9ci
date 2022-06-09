@@ -164,8 +164,6 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function runCodeSniffer() {
     $tasks = [];
-    $tasks[] = $this->taskExecStack()
-      ->exec('vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer');
     $tasks[] = $this->taskFilesystemStack()
       ->mkdir('artifacts/phpcs');
     $tasks[] = $this->taskExecStack()
