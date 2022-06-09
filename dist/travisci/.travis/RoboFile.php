@@ -227,7 +227,7 @@ class RoboFile extends \Robo\Tasks
     protected function runUnitTests()
     {
         $tasks = [];
-        $tasks[] = $this->taskDockerComposeExec('vendor/bin/phpunit -c core --verbose web/modules/custom');
+        $tasks[] = $this->taskDockerComposeExec('vendor/bin/phpunit -c web/core --verbose web/modules/custom');
         return $tasks;
     }
 
