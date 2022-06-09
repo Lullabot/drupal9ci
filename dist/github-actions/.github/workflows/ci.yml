@@ -22,6 +22,8 @@ jobs:
 
       - name: Build project
         run: |
+          composer global remove hirak/prestissimo &
+          composer self-update --2 &
           robo job:build
 
       - name: Run PHPUnit tests
@@ -39,6 +41,8 @@ jobs:
 
       - name: Build project
         run: |
+          composer global remove hirak/prestissimo &
+          composer self-update --2 &
           robo job:build
 
       - name: Check coding standards
@@ -65,6 +69,8 @@ jobs:
 
       - name: Build project
         run: |
+          composer global remove hirak/prestissimo &
+          composer self-update --2 &
           robo job:build
 
       - name: Assess code coverage
@@ -99,6 +105,8 @@ jobs:
 
       - name: Build project
         run: |
+          composer global remove hirak/prestissimo &
+          composer self-update --2 &
           robo job:build
 
       - name: Run Behat tests
@@ -128,6 +136,8 @@ jobs:
 
       - name: Build project
         run: |
+          composer global remove hirak/prestissimo &
+          composer self-update --2 &
           robo job:build
 
       # juampynr/drupal9ci:latest lands with PHP8 and node, so if your project is PHP8 you can remove this step.
