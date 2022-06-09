@@ -46,6 +46,9 @@ class RoboFile extends \Robo\Tasks
     public function jobRunUnitTests()
     {
         $collection = $this->collectionBuilder();
+        $collection->addTaskList($this->buildEnvironment());
+        $collection->addTaskList($this->serveDrupal());
+        $collection->addTask($this->waitForDrupal());
         $collection->addTask($this->installDrupal());
         $collection->addTaskList($this->runUnitTests());
         return $collection->run();
@@ -119,6 +122,7 @@ class RoboFile extends \Robo\Tasks
             ->copy('.travis/php-node.dockerfile', 'php-node.dockerfile', $force)
             ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php', $force)
             ->copy('.travis/config/behat.yml', 'tests/behat.yml', $force)
+            ->copy('.travis/config/phpunit.xml', 'web/core/phpunit.xml', $force)
             ->copy('.cypress/cypress.json', 'cypress.json', $force)
             ->copy('.cypress/package.json', 'package.json', $force);
         $tasks[] = $this->taskExec('docker-compose pull');
@@ -141,9 +145,6 @@ class RoboFile extends \Robo\Tasks
 
     /**
      * Updates the database.
-     *
-     * We can't use the drush() method because this is running within a docker-compose
-     * environment.
      *
      * @return \Robo\Task\Base\Exec[]
      *   An array of tasks.
@@ -213,11 +214,7 @@ class RoboFile extends \Robo\Tasks
      */
     protected function installDrupal()
     {
-        $task = $this->drush()
-            ->args('site-install')
-            ->option('verbose')
-            ->option('yes')
-            ->option('db-url', static::DB_URL, '=');
+        $task = $this->taskDockerComposeExec('vendor/bin/drush si -y');
         return $task;
     }
 
@@ -229,13 +226,8 @@ class RoboFile extends \Robo\Tasks
      */
     protected function runUnitTests()
     {
-        $force = TRUE;
         $tasks = [];
-        $tasks[] = $this->taskFilesystemStack()
-            ->copy('.travis/config/phpunit.xml', 'web/core/phpunit.xml', $force);
-        $tasks[] = $this->taskExecStack()
-            ->dir('web')
-            ->exec('../vendor/bin/phpunit -c core --verbose modules/custom');
+        $tasks[] = $this->taskDockerComposeExec('vendor/bin/phpunit -c core --verbose web/modules/custom');
         return $tasks;
     }
 
@@ -264,20 +256,6 @@ class RoboFile extends \Robo\Tasks
         $tasks[] = $this->taskDockerComposeExec('npm install cypress@9 --save-dev --unsafe-perm');
         $tasks[] = $this->taskDockerComposeExec('$(npm bin)/cypress run');
         return $tasks;
-    }
-
-    /**
-     * Return drush with default arguments.
-     *
-     * @return \Robo\Task\Base\Exec
-     *   A drush exec command.
-     */
-    protected function drush()
-    {
-        // Drush needs an absolute path to the docroot.
-        $docroot = $this->getDocroot() . '/web';
-        return $this->taskExec('vendor/bin/drush')
-            ->option('root', $docroot, '=');
     }
 
     /**
