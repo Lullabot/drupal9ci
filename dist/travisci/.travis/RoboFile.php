@@ -49,7 +49,8 @@ class RoboFile extends \Robo\Tasks
         $collection->addTaskList($this->buildEnvironment());
         $collection->addTaskList($this->serveDrupal());
         $collection->addTask($this->waitForDrupal());
-        $collection->addTask($this->installDrupal());
+        $collection->addTaskList($this->importDatabase());
+        $collection->addTaskList($this->runUpdatePath());
         $collection->addTaskList($this->runUnitTests());
         return $collection->run();
     }
@@ -204,18 +205,6 @@ class RoboFile extends \Robo\Tasks
         $tasks[] = $this->taskDockerComposeExec('wget -O /tmp/dump.sql "' . getenv('DB_DUMP_URL') . '"');
         $tasks[] = $this->taskDockerComposeExec('vendor/bin/drush sql-cli < /tmp/dump.sql');
         return $tasks;
-    }
-
-    /**
-     * Install Drupal.
-     *
-     * @return \Robo\Task\Base\Exec
-     *   A task to install Drupal.
-     */
-    protected function installDrupal()
-    {
-        $task = $this->taskDockerComposeExec('vendor/bin/drush si -y');
-        return $task;
     }
 
     /**
