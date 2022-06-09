@@ -28,6 +28,7 @@ drupal9ci_install() {
 	composer self-update --2
 	COMPOSER_MEMORY_LIMIT=-1 composer require --dev	\
 		drupal/core-dev \
+		drupal/coder \
 		phpspec/prophecy-phpunit:^2 \
 		drupal/drupal-extension -W
 }
