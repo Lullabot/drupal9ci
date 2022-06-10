@@ -20,10 +20,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Update composer
+        run: composer self-update --2
+
       - name: Build project
-        run: |
-          composer self-update --2 &
-          robo job:build
+        run: robo job:build
 
       - name: Run PHPUnit tests
         run: vendor/bin/robo job:unit-tests
@@ -38,10 +39,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Update composer
+        run: composer self-update --2
+
       - name: Build project
-        run: |
-          composer self-update --2 &
-          robo job:build
+        run: robo job:build
 
       - name: Check coding standards
         run: vendor/bin/robo job:coding-standards
@@ -65,10 +67,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Update composer
+        run: composer self-update --2
+
       - name: Build project
-        run: |
-          composer self-update --2 &
-          robo job:build
+        run: robo job:build
 
       - name: Assess code coverage
         run: |
@@ -100,10 +103,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Update composer
+        run: composer self-update --2
+
       - name: Build project
-        run: |
-          composer self-update --2 &
-          robo job:build
+        run: robo job:build
 
       - name: Run Behat tests
         run: |
@@ -130,10 +134,11 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Update composer
+        run: composer self-update --2
+
       - name: Build project
-        run: |
-          composer self-update --2 &
-          robo job:build
+        run: robo job:build
 
       # juampynr/drupal9ci:latest lands with PHP8 and node, so if your project is PHP8 you can remove this step.
       - name: Setup node
