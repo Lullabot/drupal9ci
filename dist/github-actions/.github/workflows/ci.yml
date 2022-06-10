@@ -78,7 +78,7 @@ jobs:
           vendor/bin/robo job:coverage-report
 
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: coverage
           path: coverage
