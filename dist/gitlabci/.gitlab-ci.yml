@@ -43,7 +43,9 @@ drupal9ci:build:
   extends: .cache_strategy_push
   image: juampynr/drupal8ci:latest
   stage: build
-  script: robo job:build
+  script:
+    - composer global remove hirak/prestissimo && composer self-update --2
+    - robo job:build
   artifacts:
     untracked: true
     paths:

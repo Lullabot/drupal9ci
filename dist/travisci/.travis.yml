@@ -1,5 +1,5 @@
 language: php
-dist: xenial
+dist: bionic
 sudo: required
 
 cache:
@@ -10,7 +10,7 @@ services:
   - docker
 
 php:
-  - 7.3
+  - 7.4
 
 env:
   global:
@@ -26,6 +26,7 @@ before_install:
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 install:
+  - composer self-update --2
   - composer --verbose install
 
 before_script:
@@ -34,5 +35,5 @@ before_script:
 script:
   - vendor/bin/robo $JOB
 
-after_success:
-  - test $JOB = "job:run-unit-tests" && travis_retry php vendor/bin/php-coveralls -v
+# after_success:
+#   - test $JOB = "job:run-unit-tests" && travis_retry php vendor/bin/php-coveralls -v
