@@ -22,7 +22,6 @@ jobs:
 
       - name: Build project
         run: |
-          composer global remove hirak/prestissimo &
           composer self-update --2 &
           robo job:build
 
@@ -41,7 +40,6 @@ jobs:
 
       - name: Build project
         run: |
-          composer global remove hirak/prestissimo &
           composer self-update --2 &
           robo job:build
 
@@ -69,7 +67,6 @@ jobs:
 
       - name: Build project
         run: |
-          composer global remove hirak/prestissimo &
           composer self-update --2 &
           robo job:build
 
@@ -105,7 +102,6 @@ jobs:
 
       - name: Build project
         run: |
-          composer global remove hirak/prestissimo &
           composer self-update --2 &
           robo job:build
 
@@ -136,7 +132,6 @@ jobs:
 
       - name: Build project
         run: |
-          composer global remove hirak/prestissimo &
           composer self-update --2 &
           robo job:build
 
