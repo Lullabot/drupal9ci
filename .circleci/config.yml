@@ -11,10 +11,6 @@ jobs:
     steps:
       - checkout
 
-      - uses: actions/setup-go@v3
-        with:
-          go-version: '^1.18'
-
       - run:
         name: Build application
         command: |
