@@ -1,11 +1,11 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package main
 
-import "drupal9ci/cmd"
+import (
+	"drupal9ci/cmd"
+	"drupal9ci/scripts"
+	_ "embed"
+)
 
 func main() {
-	cmd.Execute()
+	cmd.Execute(scripts.LoadSetupScripts())
 }

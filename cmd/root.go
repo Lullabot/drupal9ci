@@ -1,12 +1,15 @@
 package cmd
 
 import (
+	"drupal9ci/scripts"
 	"fmt"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"io"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 var cfgFile string
@@ -28,43 +31,49 @@ to quickly create a Cobra application.`,
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	prompt := promptui.Select{
-		Label: "Select CI provider",
-		Items: []string{"Bitbucket", "CircleCI", "GitHub Actions", "GitLab CI", "Travis CI"},
+func Execute(setupScripts *scripts.SetupScripts) {
+	var selectedCIProvider string
+	var setupScript string
+	var err error
+
+	if len(os.Args) > 1 {
+		selectedCIProvider = os.Args[1]
+	} else {
+		ciProviders := []string{"Bitbucket", "CircleCI", "GitHub Actions", "GitLab CI", "Travis CI"}
+
+		prompt := promptui.Select{
+			Label: "Select CI provider",
+			Items: ciProviders,
+		}
+
+		_, selectedCIProvider, err = prompt.Run()
+		if err != nil {
+			fmt.Printf("Prompt failed %v\n", err)
+			return
+		}
 	}
 
-	_, result, err := prompt.Run()
-
-	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
+	switch selectedCIProvider {
+	case "Bitbucket":
+		setupScript = setupScripts.BitBucket
+	case "CircleCI":
+		setupScript = setupScripts.CircleCI
+	case "GitHub Actions":
+		setupScript = setupScripts.GitHubActions
+	case "GitLab CI":
+		setupScript = setupScripts.GitLabCI
+	case "Travis CI":
+		setupScript = setupScripts.TravisCI
+	default:
+		fmt.Println("Unknown CI provider")
 		return
 	}
 
-	var setupScriptUrl string
-	switch result {
-	case "Bitbucket":
-		setupScriptUrl = "https://github.com/lullabot/drupal9ci/raw/master/setup-bitbucket.sh"
-	case "CircleCI":
-		setupScriptUrl = "https://github.com/lullabot/drupal9ci/raw/master/setup-circleci.sh"
-	case "GitHub Actions":
-		setupScriptUrl = "https://github.com/lullabot/drupal9ci/raw/master/setup-github-actions.sh"
-	case "GitLab CI":
-		setupScriptUrl = "https://github.com/lullabot/drupal9ci/raw/master/setup-gitlab-ci.sh"
-	case "Travis CI":
-		setupScriptUrl = "https://github.com/lullabot/drupal9ci/raw/master/setup-travis-ci.sh"
-	}
-
-	getScriptCmd := exec.Command("curl", "-L", setupScriptUrl)
+	stringReader := strings.NewReader(setupScript)
+	stringReadCloser := io.NopCloser(stringReader)
 	execScriptCmd := exec.Command("bash")
 
-	pipe, err := getScriptCmd.StdoutPipe()
-	defer pipe.Close()
-
-	execScriptCmd.Stdin = pipe
-
-	getScriptCmd.Start()
-
+	execScriptCmd.Stdin = stringReadCloser
 	res, err := execScriptCmd.CombinedOutput()
 	if err != nil {
 		fmt.Println("error executing script: ", err.Error())

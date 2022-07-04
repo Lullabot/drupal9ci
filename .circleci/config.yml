@@ -1,8 +1,6 @@
-# PHP CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-php/ for more details
-#
-version: 2
+version: 2.1
+orbs:
+  go: circleci/go@1.18
 jobs:
   build:
     docker:
@@ -13,14 +11,23 @@ jobs:
     steps:
       - checkout
 
-      - run:
-          name: Build Drupal skeleton with Composer Drupal Project
-          command: |
-            composer create-project drupal-composer/drupal-project:9.x-dev drupal --stability dev --no-interaction
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.18'
 
       - run:
-          name: Run setup script
-          command: |
-            cp setup-circleci.sh drupal
-            cd drupal
-            ./setup-circleci.sh
+        name: Build application
+        command: |
+          go build
+
+      - run:
+        name: Build Drupal skeleton with Composer Drupal Project
+        command: |
+          composer create-project drupal-composer/drupal-project:9.x-dev drupal --stability dev --no-interaction
+
+      - run:
+        name: Copy application binary and run it
+        command: |
+          cp drupal9ci drupal/
+          cd drupal
+          ./drupal9ci BitBucket
