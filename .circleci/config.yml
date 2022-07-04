@@ -28,4 +28,5 @@ jobs:
           command: |
             cp drupal9ci drupal/
             cd drupal
-            ./drupal9ci BitBucket
+            # We can't test interactive mode here so we pass a CI provider.
+            ./drupal9ci Bitbucket
