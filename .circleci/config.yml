@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  go: circleci/go@1.18
 jobs:
   build:
     docker:
@@ -12,18 +10,26 @@ jobs:
       - checkout
 
       - run:
-        name: Build application
-        command: |
-          go build
+          name: Install go
+          command: |
+            wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz
+            rm -rf /usr/local/go && tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
+            export PATH=$PATH:/usr/local/go/bin
+            go version
 
       - run:
-        name: Build Drupal skeleton with Composer Drupal Project
-        command: |
-          composer create-project drupal-composer/drupal-project:9.x-dev drupal --stability dev --no-interaction
+          name: Build application
+          command: |
+            go build
 
       - run:
-        name: Copy application binary and run it
-        command: |
-          cp drupal9ci drupal/
-          cd drupal
-          ./drupal9ci BitBucket
+          name: Build Drupal skeleton with Composer Drupal Project
+          command: |
+            composer create-project drupal-composer/drupal-project:9.x-dev drupal --stability dev --no-interaction
+
+      - run:
+          name: Copy application binary and run it
+          command: |
+            cp drupal9ci drupal/
+            cd drupal
+            ./drupal9ci BitBucket
