@@ -1,8 +1,9 @@
 name: Create release binaries
 on:
   push:
-#    branches:
-#      - master
+    branches:
+      - master
+      - 82-interactive-cli
 jobs:
   release-linux-amd64:
     name: release linux/amd64
