@@ -128,10 +128,8 @@ the following one:
 
 [Demo repository](https://github.com/juampynr/drupal8-github-actions)
 
-Open a terminal and run the installer from the root of your project:
-```bash
-curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-github-actions.sh | bash
-```
+Download the `drupal9ci` binary from https://github.com/Lullabot/drupal9ci/releases into the project root
+and run the command as `./drupal9ci` and select GitHub Actions. Once complete, continue below to complete the setup.
 
 Review, commit, and push the resulting changes. After doing that, navigate to the repository's homepage
 at GitHub and open the Actions tab. You should see a running workflow like the following one:
