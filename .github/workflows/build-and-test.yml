@@ -1,0 +1,27 @@
+name: Build and test
+on:
+  push:
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build application
+        run: |
+          wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz
+          rm -rf /usr/local/go && tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
+          export PATH=$PATH:/usr/local/go/bin
+          go version
+          go build
+      - name: Build Drupal skeleton with Composer Drupal Project
+        run: |
+          composer create-project drupal-composer/drupal-project:9.x-dev drupal --stability dev --no-interaction
+
+      - name: Copy application binary and run it
+        run: |
+        cp drupal9ci drupal/
+        cd drupal
+        # We can't test interactive mode here so we pass a CI provider.
+        ./drupal9ci Bitbucket
