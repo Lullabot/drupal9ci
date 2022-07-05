@@ -1,4 +1,4 @@
-name: Merge actions
+name: Publish Docker image
 on:
   push:
 
