@@ -1,6 +1,8 @@
 name: Create release
-on: push
-
+on:
+  push:
+    - master
+    - 82-interactive-cli
 jobs:
   create-release:
     name: Build and create a release
@@ -14,8 +16,10 @@ jobs:
           export PATH=$PATH:/usr/local/go/bin
           go version
           go build
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        #if: startsWith(github.ref, 'refs/tags/')
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          files: drupal9ci
+          automatic_release_tag: "${{ github.ref }}"
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            drupal9ci
