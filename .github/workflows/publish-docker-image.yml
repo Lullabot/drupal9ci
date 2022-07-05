@@ -1,0 +1,19 @@
+name: Merge actions
+on:
+  push:
+
+jobs:
+  publish-docker-image:
+    name: Publish Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        name: Check out code
+      - uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: drupal9ci
+          tags: latest
+          registry: ghcr.io
+          githubOrg: lullabot
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
