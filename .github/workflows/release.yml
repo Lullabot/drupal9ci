@@ -25,6 +25,7 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: drupal9ci
+          tags: latest
           registry: ghcr.io
           githubOrg: lullabot
           username: ${{ github.actor }}
