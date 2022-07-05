@@ -3,7 +3,7 @@ on:
   push:
 
 jobs:
-  release-linux-amd64:
+  create-release:
     name: Build and create a release
     runs-on: ubuntu-latest
     steps:
@@ -18,7 +18,6 @@ jobs:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           automatic_release_tag: latest
-          title: "${{ GITHUB_SHA }}"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
