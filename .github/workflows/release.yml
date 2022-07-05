@@ -20,7 +20,7 @@ jobs:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           automatic_release_tag: latest
-          title: "${{ $GITHUB_SHA }}"
+          title: "${{ GITHUB_SHA }}"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
