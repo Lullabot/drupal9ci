@@ -14,55 +14,31 @@ import (
 
 var cfgFile string
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "drupal9ci",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Short: "An interactive command to add Continuous Integration to a Drupal project",
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute(setupScripts *scripts.SetupScripts) {
-	var selectedCIProvider string
+	var selectedCIProvider *string
 	var setupScript string
-	var err error
 
-	if len(os.Args) > 1 {
-		selectedCIProvider = os.Args[1]
-	} else {
-		ciProviders := []string{"Bitbucket", "CircleCI", "GitHub Actions", "GitLab CI", "Travis CI"}
-
-		prompt := promptui.Select{
-			Label: "Select CI provider",
-			Items: ciProviders,
-		}
-
-		_, selectedCIProvider, err = prompt.Run()
-		if err != nil {
-			fmt.Printf("Prompt failed %v\n", err)
-			return
-		}
+	selectedCIProvider, err := getCIProvider(os.Args)
+	if err != nil {
+		fmt.Printf(err.Error())
+		return
 	}
 
-	switch selectedCIProvider {
-	case "Bitbucket":
+	switch *selectedCIProvider {
+	case scripts.Bitbucket:
 		setupScript = setupScripts.BitBucket
-	case "CircleCI":
+	case scripts.CircleCI:
 		setupScript = setupScripts.CircleCI
-	case "GitHub Actions":
+	case scripts.GithubActions:
 		setupScript = setupScripts.GitHubActions
-	case "GitLab CI":
+	case scripts.GitLabCI:
 		setupScript = setupScripts.GitLabCI
-	case "Travis CI":
+	case scripts.TravisCI:
 		setupScript = setupScripts.TravisCI
 	default:
 		fmt.Println("Unknown CI provider")
@@ -79,6 +55,24 @@ func Execute(setupScripts *scripts.SetupScripts) {
 		fmt.Println("error executing script: ", err.Error())
 	}
 	fmt.Println("output: ", string(res))
+}
+
+func getCIProvider(args []string) (*string, error) {
+	if len(args) > 1 {
+		return &args[1], nil
+	}
+	ciProviders := []string{"Bitbucket", "CircleCI", "GitHub Actions", "GitLab CI", "Travis CI"}
+
+	prompt := promptui.Select{
+		Label: "Select CI provider",
+		Items: ciProviders,
+	}
+
+	_, ciProvider, err := prompt.Run()
+	if err != nil {
+		return nil, fmt.Errorf("Prompt failed %s", err.Error())
+	}
+	return &ciProvider, nil
 }
 
 func init() {

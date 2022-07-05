@@ -2,6 +2,14 @@ package scripts
 
 import _ "embed"
 
+const (
+	Bitbucket     = "Bitbucket"
+	CircleCI      = "CircleCI"
+	GithubActions = "GitHub Actions"
+	GitLabCI      = "GitLab CI"
+	TravisCI      = "Travis CI"
+)
+
 //go:embed setup-bitbucket.sh
 var setupBitbucket string
 
