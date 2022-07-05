@@ -20,41 +20,34 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute(setupScripts *scripts.SetupScripts) {
-	var selectedCIProvider *string
-	var setupScript string
-
 	selectedCIProvider, err := getCIProvider(os.Args)
 	if err != nil {
 		fmt.Printf(err.Error())
 		return
 	}
 
-	switch *selectedCIProvider {
-	case scripts.Bitbucket:
-		setupScript = setupScripts.BitBucket
-	case scripts.CircleCI:
-		setupScript = setupScripts.CircleCI
-	case scripts.GithubActions:
-		setupScript = setupScripts.GitHubActions
-	case scripts.GitLabCI:
-		setupScript = setupScripts.GitLabCI
-	case scripts.TravisCI:
-		setupScript = setupScripts.TravisCI
-	default:
-		fmt.Println("Unknown CI provider")
+	setupScript, err := scripts.MapCIProviderToScript(selectedCIProvider, setupScripts)
+	if err != nil {
+		fmt.Printf(err.Error())
 		return
 	}
 
-	stringReader := strings.NewReader(setupScript)
-	stringReadCloser := io.NopCloser(stringReader)
-	execScriptCmd := exec.Command("bash")
+	fmt.Println("This might take a few seconds...")
 
-	execScriptCmd.Stdin = stringReadCloser
-	res, err := execScriptCmd.CombinedOutput()
+	res, err := executeCIInstallerScript(setupScript)
 	if err != nil {
 		fmt.Println("error executing script: ", err.Error())
 	}
 	fmt.Println("output: ", string(res))
+}
+
+func executeCIInstallerScript(setupScript *string) ([]byte, error) {
+	stringReader := strings.NewReader(*setupScript)
+	stringReadCloser := io.NopCloser(stringReader)
+	execScriptCmd := exec.Command("bash")
+
+	execScriptCmd.Stdin = stringReadCloser
+	return execScriptCmd.CombinedOutput()
 }
 
 func getCIProvider(args []string) (*string, error) {

@@ -1,6 +1,9 @@
 package scripts
 
-import _ "embed"
+import (
+	_ "embed"
+	"fmt"
+)
 
 const (
 	Bitbucket     = "Bitbucket"
@@ -41,4 +44,26 @@ func LoadSetupScripts() *SetupScripts {
 		GitLabCI:      setupGitLabCI,
 		TravisCI:      setupTravisCI,
 	}
+}
+
+func MapCIProviderToScript(ciProvider *string, setupScripts *SetupScripts) (*string, error) {
+	var setupScript *string
+	var err error
+
+	switch *ciProvider {
+	case Bitbucket:
+		setupScript = &setupScripts.BitBucket
+	case CircleCI:
+		setupScript = &setupScripts.CircleCI
+	case GithubActions:
+		setupScript = &setupScripts.GitHubActions
+	case GitLabCI:
+		setupScript = &setupScripts.GitLabCI
+	case TravisCI:
+		setupScript = &setupScripts.TravisCI
+	default:
+		err = fmt.Errorf("Unknown CI provider")
+	}
+
+	return setupScript, err
 }
