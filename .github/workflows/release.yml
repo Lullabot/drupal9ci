@@ -1,12 +1,12 @@
-name: Create release binaries
+name: Merge actions
 on:
   push:
-    branches:
-      - master
-      - 82-interactive-cli
+#    branches:
+#      - master
+#      - 82-interactive-cli
 jobs:
   release-linux-amd64:
-    name: release linux/amd64
+    name: Build and create a release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,10 +18,10 @@ jobs:
 
   publish-docker-image:
     name: Publish Docker image
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         name: Check out code
-
       - uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: drupal9ci
