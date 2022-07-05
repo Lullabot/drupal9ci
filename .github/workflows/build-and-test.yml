@@ -21,7 +21,7 @@ jobs:
 
       - name: Copy application binary and run it
         run: |
-        cp drupal9ci drupal/
+        cp drupal9ci drupal
         cd drupal
         # We can't test interactive mode here so we pass a CI provider.
         ./drupal9ci Bitbucket
