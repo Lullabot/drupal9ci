@@ -15,10 +15,7 @@ jobs:
           export PATH=$PATH:/usr/local/go/bin
           go version
           go build
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: ncipollo/release-action@v1
         with:
-          automatic_release_tag: "${{ github.sha }}"
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: |
-            drupal9ci
+          artifacts: "drupal9ci"
+          token: ${{ secrets.GITHUB_TOKEN }}
