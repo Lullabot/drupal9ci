@@ -1,8 +1,9 @@
 name: Create release
 on:
   push:
-    - master
-    - 82-interactive-cli
+    branches:
+      - master
+      - 82-interactive-cli
 jobs:
   create-release:
     name: Build and create a release
@@ -16,7 +17,7 @@ jobs:
           export PATH=$PATH:/usr/local/go/bin
           go version
           go build
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: marvinpinto/action-automatic-releases@latest
         with:
           automatic_release_tag: "${{ github.ref }}"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
