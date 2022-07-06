@@ -19,7 +19,7 @@ jobs:
           go build
       - uses: marvinpinto/action-automatic-releases@latest
         with:
-          automatic_release_tag: "${{ github.ref }}"
+          automatic_release_tag: "${{ github.sha }}"
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
