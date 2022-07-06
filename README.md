@@ -1,6 +1,9 @@
 # Drupal 9 CI
 
-[![CircleCI](https://circleci.com/gh/Lullabot/drupal9ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal9ci)
+![Create release](https://github.com/lullabot/drupal9ci/actions/workflows/create-release/badge.svg)
+![Publish Docker image](https://github.com/lullabot/drupal9ci/actions/workflows/publish-docker-image/badge.svg)
+![Test](https://github.com/lullabot/drupal9ci/actions/workflows/test/badge.svg)
+[![codecov](https://codecov.io/gh/Lullabot/drupal9ci/branch/master/graph/badge.svg?token=akwlXfbC0W)](https://codecov.io/gh/Lullabot/drupal9ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 9
 project using any of the following CI providers:
