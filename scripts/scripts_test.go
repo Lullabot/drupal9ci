@@ -32,3 +32,15 @@ func TestMapCIProviderToScript(t *testing.T) {
 		})
 	}
 }
+
+func TestLoadSetupScripts(t *testing.T) {
+	setupScripts := LoadSetupScripts()
+	expected := &SetupScripts{
+		BitBucket:     setupBitbucket,
+		CircleCI:      setupCircleCI,
+		GitHubActions: setupGitHubActions,
+		GitLabCI:      setupGitLabCI,
+		TravisCI:      setupTravisCI,
+	}
+	assert.Equal(t, expected, setupScripts)
+}
