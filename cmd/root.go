@@ -54,11 +54,10 @@ func getCIProvider(args []string) (*string, error) {
 	if len(args) > 1 {
 		return &args[1], nil
 	}
-	ciProviders := []string{"Bitbucket", "CircleCI", "GitHub Actions", "GitLab CI", "Travis CI"}
 
 	prompt := promptui.Select{
 		Label: "Select CI provider",
-		Items: ciProviders,
+		Items: scripts.GetCIProviderList(),
 	}
 
 	_, ciProvider, err := prompt.Run()

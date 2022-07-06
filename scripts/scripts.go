@@ -36,6 +36,16 @@ type SetupScripts struct {
 	TravisCI      string
 }
 
+func GetCIProviderList() []string {
+	return []string{
+		Bitbucket,
+		CircleCI,
+		GithubActions,
+		GitLabCI,
+		TravisCI,
+	}
+}
+
 func LoadSetupScripts() *SetupScripts {
 	return &SetupScripts{
 		BitBucket:     setupBitbucket,
