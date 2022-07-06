@@ -1,27 +1,38 @@
-name: Build and test
+name: Test
 on:
   push:
 
 jobs:
-  build-and-test:
-    name: Build and test
+  integration:
+    name: Integration tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.18'
       - name: Build application
         run: |
-          wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz
-          sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
-          export PATH=$PATH:/usr/local/go/bin
-          go version
           go build
       - name: Build Drupal skeleton with Composer Drupal Project
         run: |
           composer create-project drupal-composer/drupal-project:9.x-dev drupal --stability dev --no-interaction
-
       - name: Copy application binary and run it
         run: |
           cp drupal9ci drupal
           cd drupal
           # We can't test interactive mode here so we pass a CI provider.
           ./drupal9ci Bitbucket
+
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.18'
+      - name: Run tests with coverage
+        run: go test -race -coverprofile=coverage.out -covermode=atomic
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2

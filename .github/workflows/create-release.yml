@@ -10,12 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.18'
       - name: Build application
         run: |
-          wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz
-          sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz
-          export PATH=$PATH:/usr/local/go/bin
-          go version
           go build
       - name: Set short sha
         id: vars
