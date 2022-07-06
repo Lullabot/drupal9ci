@@ -1,0 +1,5 @@
+version: 2
+jobs:
+  noop:
+    steps:
+      - checkout
