@@ -1,6 +1,9 @@
 name: Publish Docker image
 on:
   push:
+    branches:
+      - master
+      - 82-interactive-cli
 
 jobs:
   publish-docker-image:
