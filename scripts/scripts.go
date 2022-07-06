@@ -60,20 +60,24 @@ func MapCIProviderToScript(ciProvider *string, setupScripts *SetupScripts) (*str
 	var setupScript *string
 	var err error
 
-	switch *ciProvider {
-	case Bitbucket:
-		setupScript = &setupScripts.BitBucket
-	case CircleCI:
-		setupScript = &setupScripts.CircleCI
-	case GithubActions:
-		setupScript = &setupScripts.GitHubActions
-	case GitLabCI:
-		setupScript = &setupScripts.GitLabCI
-	case TravisCI:
-		setupScript = &setupScripts.TravisCI
-	default:
-		err = fmt.Errorf("Unknown CI provider")
+	if ciProvider == nil {
+		err = fmt.Errorf("Missing CI provider")
+	} else {
+		switch *ciProvider {
+		case Bitbucket:
+			setupScript = &setupScripts.BitBucket
+		case CircleCI:
+			setupScript = &setupScripts.CircleCI
+		case GithubActions:
+			setupScript = &setupScripts.GitHubActions
+		case GitLabCI:
+			setupScript = &setupScripts.GitLabCI
+		case TravisCI:
+			setupScript = &setupScripts.TravisCI
+		default:
+			err = fmt.Errorf("Unknown CI provider")
+		}
 	}
-
+	
 	return setupScript, err
 }
