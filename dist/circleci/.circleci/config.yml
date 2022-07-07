@@ -16,7 +16,7 @@ update_composer: &update_composer
 ## Defines images and working directory.
 defaults: &defaults
   docker:
-    - image: juampynr/drupal8ci:latest
+    - image: ghcr.io/lullabot/drupal9ci:latest
       environment:
         XDEBUG_MODE: coverage
     - image: mariadb:10.3
@@ -79,7 +79,6 @@ behat_tests: &behat_tests
     - save_cache: *save_cache
 
 ## Job to run the update path and Cypress tests.
-# juampynr/drupal9ci:latest lands with PHP8 and node, so if your project is PHP8 you can remove the `Set up node` step.
 cypress_tests: &cypress_tests
   <<: *defaults
   steps:
@@ -87,11 +86,6 @@ cypress_tests: &cypress_tests
     - *copy_robo
     - *update_composer
     - restore_cache: *restore_cache
-    - run:
-        name: Setup node
-        command: |
-          curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-          apt install -y nodejs xvfb libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
     - run:
         name: Run Cypress tests
         command: robo job:run-cypress-tests

@@ -27,10 +27,8 @@ structure differs from what _drupal-project_ sets up, you will need to
 adjust the CI scripts.
 
 It's also recommended to adjust your project to add a subset of the `settings.php` file into
-version control and rely on `settings.local.php` for setting the database connection. See [this
-commit](https://github.com/juampynr/drupal8-circleci/commit/817d0b6674c42dba73165b047b6b89d72ee72d11)
-which contains these changes among other ones. The CI scripts have their own `settings.local.php`
-which is copied at build time into `web/sites/default`.
+version control and rely on `settings.local.php` for setting the database connection. The CI scripts
+have their own `settings.local.php` which is copied at build time into `web/sites/default`.
 
 #### DocumentRoot: web vs docroot
 
@@ -66,9 +64,8 @@ For an overview of the CircleCI features, have a look at
 #### Using a custom Docker image
 
 The [CircleCI configuration file](dist/circleci/.circleci/config.yml) uses a
-[custom Docker image](https://hub.docker.com/r/juampynr/drupal8ci/) that extends from
-the [official Drupal image](https://hub.docker.com/_/drupal/) and it is [hosted at
-Docker Hub](https://hub.docker.com/r/juampynr/drupal8ci/). If this image
+[custom Docker image](https://github.com/Lullabot/drupal9ci/pkgs/container/drupal9ci) that extends from
+the [official Drupal image](https://hub.docker.com/_/drupal/). If this image
 does not fit your project's architecture then consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
 based out of it.
 
