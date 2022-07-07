@@ -4,7 +4,7 @@ jobs:
   phpunit:
     runs-on: ubuntu-latest
     container:
-      image: juampynr/drupal8ci:latest
+      image: ghcr.io/lullabot/drupal9ci:latest
 
     services:
       mariadb:
@@ -32,7 +32,7 @@ jobs:
   code-standards:
     runs-on: ubuntu-latest
     container:
-      image: juampynr/drupal8ci:latest
+      image: ghcr.io/lullabot/drupal9ci:latest
 
     steps:
       - uses: actions/checkout@v1
@@ -51,7 +51,7 @@ jobs:
   code-coverage:
     runs-on: ubuntu-latest
     container:
-      image: juampynr/drupal8ci:latest
+      image: ghcr.io/lullabot/drupal9ci:latest
 
     services:
       mariadb:
@@ -86,7 +86,7 @@ jobs:
   behat:
     runs-on: ubuntu-latest
     container:
-      image: juampynr/drupal8ci:latest
+      image: ghcr.io/lullabot/drupal9ci:latest
     services:
       mariadb:
         image: mariadb:latest
@@ -117,7 +117,7 @@ jobs:
   cypress:
     runs-on: ubuntu-latest
     container:
-      image: juampynr/drupal8ci:latest
+      image: ghcr.io/lullabot/drupal9ci:latest
     services:
       mariadb:
         image: mariadb:latest
@@ -140,7 +140,7 @@ jobs:
       - name: Build project
         run: robo job:build
 
-      # juampynr/drupal9ci:latest lands with PHP8 and node, so if your project is PHP8 you can remove this step.
+      # ghcr.io/lullabot/drupal9ci:latest:latest lands with PHP8 and node, so if your project is PHP8 you can remove this step.
       - name: Setup node
         run: |
           curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
