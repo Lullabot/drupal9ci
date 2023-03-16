@@ -23,7 +23,7 @@ stages:
 # The template for Drupal9CI tests.
 .drupal9ci_test_template:
   extends: .cache_strategy_pull
-  image: juampynr/drupal8ci:latest
+  image: ghcr.io/lullabot/drupal9ci:latest
   stage: test
   services:
     - name: mariadb:latest
@@ -41,7 +41,7 @@ stages:
 ## Job to build the environment.
 drupal9ci:build:
   extends: .cache_strategy_push
-  image: juampynr/drupal8ci:latest
+  image: ghcr.io/lullabot/drupal9ci:latest
   stage: build
   script:
     - composer global remove hirak/prestissimo && composer self-update --2
@@ -54,7 +54,7 @@ drupal9ci:build:
 ## Job to check coding standards.
 drupal9ci:code_sniffer:
   extends: .cache_strategy_pull
-  image: juampynr/drupal8ci:latest
+  image: ghcr.io/lullabot/drupal9ci:latest
   script: vendor/bin/robo job:coding-standards
   artifacts:
     paths:
@@ -82,7 +82,7 @@ drupal9ci:code_coverage:
 ## Job to run behat.
 drupal9ci:behat:
   extends: .drupal9ci_test_template
-  image: juampynr/drupal8ci:latest
+  image: ghcr.io/lullabot/drupal9ci:latest
   variables:
     FOO: bar
     # DB_DUMP_URL: "URL to your DB dump"
@@ -97,7 +97,7 @@ drupal9ci:behat:
 ## Job to run cypress.
 drupal9ci:cypress:
   extends: .drupal9ci_test_template
-  image: juampynr/drupal9ci:latest
+  image: ghcr.io/lullabot/drupal9ci:latest
   variables:
     FOO: bar
     # DB_DUMP_URL: "URL to your DB dump"

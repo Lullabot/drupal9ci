@@ -1,4 +1,4 @@
-FROM drupal:php8.1-apache-bullseye
+FROM drupal:9-apache
 
 RUN apt-get update && apt-get install -y \
   git \
@@ -39,15 +39,15 @@ RUN pecl install xdebug && \
 RUN wget https://robo.li/robo.phar && \
     chmod +x robo.phar && mv robo.phar /usr/local/bin/robo
 
+# Install node.
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && \
+    apt install -y nodejs xvfb libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
+
 # Install Dockerize.
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-
-# Install ImageMagic to take screenshots.
-RUN pecl install imagick && \
-    docker-php-ext-enable imagick
 
 # Install Chrome browser.
 RUN apt-get install --yes gnupg2 apt-transport-https && \

@@ -1,6 +1,9 @@
 # Drupal 9 CI
 
-[![CircleCI](https://circleci.com/gh/Lullabot/drupal9ci.svg?style=svg)](https://circleci.com/gh/Lullabot/drupal9ci)
+[![Test](https://github.com/Lullabot/drupal9ci/actions/workflows/test.yml/badge.svg)](https://github.com/Lullabot/drupal9ci/actions/workflows/test.yml)
+[![Create release](https://github.com/Lullabot/drupal9ci/actions/workflows/create-release.yml/badge.svg)](https://github.com/Lullabot/drupal9ci/actions/workflows/create-release.yml)
+[![Publish Docker image](https://github.com/Lullabot/drupal9ci/actions/workflows/publish-docker-image.yml/badge.svg)](https://github.com/Lullabot/drupal9ci/actions/workflows/publish-docker-image.yml)
+[![codecov](https://codecov.io/gh/Lullabot/drupal9ci/branch/master/graph/badge.svg?token=akwlXfbC0W)](https://codecov.io/gh/Lullabot/drupal9ci)
 
 This repository provides the foundation to implement [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) in a Drupal 9
 project using any of the following CI providers:
@@ -10,9 +13,6 @@ project using any of the following CI providers:
  * [GitLab CI](#gitlab-ci)
  * [GitHub Actions](#github-actions)
  * [Bitbucket Pipelines](#bitbucket)
-
-To install, simply run the respective installer and allow the CI provider that you chose to watch repository changes
-to start building on every pull request.
 
 If you want to test an individual module instead of a Drupal project, see Andrew Berry's
 [drupal_tests](https://github.com/deviantintegral/drupal_tests).
@@ -27,36 +27,27 @@ structure differs from what _drupal-project_ sets up, you will need to
 adjust the CI scripts.
 
 It's also recommended to adjust your project to add a subset of the `settings.php` file into
-version control and rely on `settings.local.php` for setting the database connection. See [this
-commit](https://github.com/juampynr/drupal8-circleci/commit/817d0b6674c42dba73165b047b6b89d72ee72d11)
-which contains these changes among other ones. The CI scripts have their own `settings.local.php`
-which is copied at build time into `web/sites/default`.
+version control and rely on `settings.local.php` for setting the database connection. The CI scripts
+have their own `settings.local.php` which is copied at build time into `web/sites/default`.
 
 #### DocumentRoot: web vs docroot
 
-By default Apache and the rest of the code is set up to have the `DocumentRoot` folder as `web`. If
+By default, Apache and the rest of the code is set up to have the `DocumentRoot` folder as `web`. If
 your project uses `docroot` instead, the easiest thing to do is to symlink one to the other. This can be
 done adding a line like [this one](https://github.com/Lullabot/drupal9ci/blob/master/dist/bitbucket/RoboFile.php#L187)
 before running Apache (you will need to adapt paths).
 
-Otherwise you can go through the files and replace as needed. You can see a list of affected files in
+Alternatively you can go through the files and replace as needed. You can see a list of affected files in
 [this comment](https://github.com/Lullabot/drupal9ci/issues/74#issuecomment-884238645).
 
 ## Installation
-
-Each CI tool has its own installer, which extracts the required files to run the jobs. It also
-adds a demo module with tests.
-
-Choose a CI tool from the list below and follow its installation steps.
 
 ### [CircleCI](https://circleci.com)
 
 [Demo repository](https://github.com/juampynr/drupal8-circleci) | [Deep dive article](https://www.lullabot.com/articles/continuous-integration-drupal-8-circleci)
 
-Open a terminal and run the installer from the root of your project:
-```bash
-curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-circleci.sh | bash
-```
+Download the `drupal9ci` binary from https://github.com/Lullabot/drupal9ci/releases into the project root
+and run the command as `./drupal9ci` and select CircleCI. Once complete, continue below to complete the setup.
 
 Sign up at [CircleCI](https://circleci.com/) and allow access to your project's repository.
 
@@ -73,21 +64,17 @@ For an overview of the CircleCI features, have a look at
 #### Using a custom Docker image
 
 The [CircleCI configuration file](dist/circleci/.circleci/config.yml) uses a
-[custom Docker image](https://hub.docker.com/r/juampynr/drupal8ci/) that extends from
-the [official Drupal image](https://hub.docker.com/_/drupal/) and it is [hosted at
-Docker Hub](https://hub.docker.com/r/juampynr/drupal8ci/). If this image
+[custom Docker image](https://github.com/Lullabot/drupal9ci/pkgs/container/drupal9ci) that extends from
+the [official Drupal image](https://hub.docker.com/_/drupal/). If this image
 does not fit your project's architecture then consider [creating your own image](https://circleci.com/docs/2.0/custom-images/)
 based out of it.
-
 
 ### [Travis CI](https://travis-ci.org)
 
 [Demo repository](https://github.com/juampynr/drupal8-travis-ci) | [Deep dive article](https://www.lullabot.com/articles/continuous-integration-in-drupal-8-with-travis-ci)
 
-Open a terminal and run the installer from the root of your project:
-```bash
-curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-travis-ci.sh | bash
-```
+Download the `drupal9ci` binary from https://github.com/Lullabot/drupal9ci/releases into the project root
+and run the command as `./drupal9ci` and select Travis CI. Once complete, continue below to complete the setup.
 
 Sign up at [Travis CI](https://travis-ci.com/) and allow access to your project's repository:
 
@@ -128,10 +115,8 @@ at the pull request's status message:
 
 [Demo repository](https://gitlab.com/juampynr/drupal8-gitlab) | [Deep dive article](https://www.lullabot.com/articles/installer-drupal-8-and-gitlab-ci)
 
-Open a terminal and run the installer from the root of your project:
-```bash
-curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-gitlab-ci.sh | bash
-```
+Download the `drupal9ci` binary from https://github.com/Lullabot/drupal9ci/releases into the project root
+and run the command as `./drupal9ci` and select GitLab CI. Once complete, continue below to complete the setup.
 
 Review, commit, and push the resulting changes. After doing that, navigate to the project's homepage
 at GitLab and open the CI / CD >> Pipelines section. You should see a running pipeline like
@@ -139,15 +124,12 @@ the following one:
 
 ![GitLab pipeline](docs/images/gitlab-pipeline.png)
 
-
 ### [GitHub Actions](https://github.com/features/actions)
 
 [Demo repository](https://github.com/juampynr/drupal8-github-actions)
 
-Open a terminal and run the installer from the root of your project:
-```bash
-curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-github-actions.sh | bash
-```
+Download the `drupal9ci` binary from https://github.com/Lullabot/drupal9ci/releases into the project root
+and run the command as `./drupal9ci` and select GitHub Actions. Once complete, continue below to complete the setup.
 
 Review, commit, and push the resulting changes. After doing that, navigate to the repository's homepage
 at GitHub and open the Actions tab. You should see a running workflow like the following one:
@@ -157,16 +139,13 @@ at GitHub and open the Actions tab. You should see a running workflow like the f
 
 ### [Bitbucket](https://support.atlassian.com/bitbucket-cloud/docs/get-started-with-bitbucket-pipelines)
 
-Open a terminal and run the installer from the root of your project:
-```bash
-curl -L https://github.com/lullabot/drupal9ci/raw/master/setup-bitbucket.sh | bash
-```
+Download the `drupal9ci` binary from https://github.com/Lullabot/drupal9ci/releases into the project root
+and run the command as `./drupal9ci` and select Bitbucket. Once complete, continue below to complete the setup.
 
 Review, commit, and push the resulting changes. After doing that, navigate to the repository's homepage
 at Bitbucket and open the Pipelines tab. You should see a running workflow like the following one:
 
 ![Bitbucket pipelines](docs/images/bitbucket.png)
-
 
 ### Setting up the Behat and Cypress jobs for all platforms
 
@@ -174,6 +153,12 @@ The Behat and Cypress jobs require a running Drupal 9 site. The repository conta
 tests in a realistic environment you need:
 
 ##### 1. A recent copy of the production environment's database
+
+There are several ways to accomplish this:
+
+**Using a prepopulated Docker database image**
+
+See [Achieve Rocketship-Fast Jobs in CircleCI by Preinstalling the Database](https://www.lullabot.com/articles/rocket-ship-fast-jobs-circleci-preinstalling-database)
 
 **Travis**
 
@@ -194,6 +179,8 @@ dump somewhere and set up the `DB_DUMP_URL` environment variable so the job can 
 For example:
 ![Travis CI db env var](docs/images/travisci-db-var.png)
 ![CircleCI database via environment variable](docs/images/circleci-db-env.png)
+
+A sample implementation is to use Dropbox API. [See this repository for further details](https://github.com/juampynr/dropbox-api).
 
 ##### 2. The production environment's files directory
 
