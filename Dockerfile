@@ -26,7 +26,7 @@ COPY scripts/composer-installer.sh /tmp/composer-installer.sh
 RUN chmod +x /tmp/composer-installer.sh && \
     /tmp/composer-installer.sh && \
     mv composer.phar /usr/local/bin/composer && \
-    composer self-update --1
+    composer self-update --2
 
 # Put a turbo on composer.
 RUN composer global require hirak/prestissimo
@@ -44,7 +44,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && \
     apt install -y nodejs xvfb libgtk-3-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
 
 # Install Dockerize.
-ENV DOCKERIZE_VERSION v0.6.0
+ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
