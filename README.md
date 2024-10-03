@@ -1,3 +1,7 @@
+_This project is now archived and unmaintained._ Feel free to fork and contact us elsewhere if you would like to take this project over.
+
+Lullabot's current CI tooling focus takes place in [lullabot/drainpipe](https://github.com/lullabot/drainpipe/). Join us there!
+
 # Drupal 9 CI
 
 [![Test](https://github.com/Lullabot/drupal9ci/actions/workflows/test.yml/badge.svg)](https://github.com/Lullabot/drupal9ci/actions/workflows/test.yml)
